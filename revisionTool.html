@@ -1,0 +1,2414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Revision Tools</title>
+  <style>
+    /* Import Google Fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap');
+
+    /* CSS Variables */
+    :root {
+      --bg: #0A0A0A;                /* Background - True black, clean canvas */
+      --card: #1E1E2E;              /* Container Cards - Dark charcoal for contrast */
+      --accent1: #39FF14;           /* Primary Accent - Neon green */
+      --accent2: #00FFFF;           /* Secondary Accent - Cyan glow */
+      --accent3: #FF3CAC;           /* Tertiary Accent - Hot pink for CTA buttons */
+      --text-primary: #E0E0E0;      /* Text (Primary) - Almost white, readable */
+      --text-secondary: #A0A0A0;    /* Text (Secondary) - Muted gray */
+      --focus-glow: #00FFD1;        /* Focus Ring - For animated rings, hover glows */
+      --error: #FF5555;             /* Error / Alert - Sharp red for contrast */
+      --shadow-tint: rgba(0,255,200,0.15); /* Shadow Tint - Glowing neon shadow overlay */
+      --success: #28a745;           /* Success - Soft green */
+      --border: rgba(255,255,255,0.1);    /* Border - Light border */
+      --hover: rgba(0,255,209,0.05); /* Hover - Very subtle cyan */
+    }
+
+/* Base Styles */
+body {
+  font-family: 'Montserrat', 'Raleway', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  line-height: 1.6;
+  font-size: 15px;
+  letter-spacing: 0.3px;
+  background: var(--bg);
+  color: var(--text-primary);
+  margin: 0;
+  padding: 0;
+}
+  
+  /* Container styling */
+  .container {
+  background: var(--card);
+  color: var(--text-primary);
+  box-shadow: 0 4px 20px var(--shadow-tint);
+  border-radius: 16px;
+  padding: 30px;
+  max-width: 1000px;
+  margin: 40px auto;
+  position: relative;
+  overflow: hidden;
+}
+  
+  .container:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--card);
+    pointer-events: none;
+    z-index: 0;
+  }
+  
+  .container > * {
+    position: relative;
+    z-index: 1;
+  }
+  
+  /* Buttons */
+  button, .accent-btn, .mode-btn {
+    background: var(--accent1);
+    color: black;
+    border: none;
+    border-radius: 30px;
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 4px 15px var(--shadow-tint);
+    transition: all 0.2s ease;
+    cursor: pointer;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+  }
+  
+  button:hover, .accent-btn:hover, .mode-btn:hover {
+  background: var(--accent1);
+  transform: translateY(-2px) !important;
+  color: black;
+}
+  
+  .mode-btn:hover {
+    background: var(--accent1);
+    transform: translateY(-2px) !important;
+  }
+  
+  button:active, .accent-btn:active, .mode-btn:active {
+    background: var(--accent1);
+    transform: translateY(1px);
+    box-shadow: 0 0 1px var(--shadow-tint);
+  }
+  
+  /* Form Elements */
+  input, select, textarea {
+    background: rgba(10, 10, 10, 0.7);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+  }
+  
+  input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--accent2);
+    box-shadow: 0 0 0 2px rgba(0, 255, 255, 0.1);
+  }
+  
+  /* Headings */
+  h1, h2 {
+    color: var(--text-primary);
+    font-weight: 700;
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+  }
+  
+  h1 {
+    font-size: 42px;
+    margin-top: 0;
+    position: relative;
+    color: var(--accent2);
+    padding-bottom: 20px;
+    display: block;
+    text-align: center;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 30px;
+  }
+  
+  h1:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 180px;
+    height: 4px;
+    background: var(--accent1);
+    border-radius: 4px;
+  }
+  
+
+  
+  h2 {
+    font-size: 26px;
+    position: relative;
+    color: var(--accent2);
+    margin-bottom: 25px;
+    font-weight: 600;
+    letter-spacing: 1.2px;
+  }
+  
+
+  
+  /* Error styles */
+.error {
+  color: var(--error);
+  font-weight: 500;
+}
+
+/* Error styles */
+.error {
+  color: var(--error);
+  font-weight: 500;
+}
+
+.resource-link {
+  color: var(--accent1);
+  text-decoration: none;
+  display: block;
+  margin-bottom: 8px;
+  word-break: break-all;
+  transition: all 0.2s ease;
+}
+
+.resource-link:hover {
+  color: var(--accent2);
+}
+
+.resource-category {
+  color: var(--text-secondary);
+  font-size: 0.9em;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+  
+  /* Button styling */
+.accent-btn, button, .mode-btn {
+  position: relative;
+  transition: all 0.2s ease;
+  border-radius: 30px;
+  font-weight: 600;
+  padding: 12px 24px;
+  background: var(--accent1);
+  color: black;
+  box-shadow: 0 4px 15px var(--shadow-tint);
+  font-size: 14px;
+  letter-spacing: 0.8px;
+  border: none;
+  text-transform: uppercase;
+}
+
+.accent-btn:hover, button:hover, .mode-btn:hover {
+  transform: translateY(-2px) !important;
+  background: var(--accent1);
+  color: black;
+}
+
+.accent-btn:active, button:active, .mode-btn:active {
+  transform: none;
+  box-shadow: 0 4px 15px var(--shadow-tint);
+}
+
+/* Input styling */
+input, select, textarea {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px 15px;
+  background: var(--bg);
+  color: var(--text-primary);
+  transition: all 0.2s ease;
+}
+
+input:focus, select:focus, textarea:focus {
+  box-shadow: 0 0 0 3px rgba(74, 108, 250, 0.15);
+  border-color: var(--accent1);
+  outline: none;
+}
+  /* Flashcard styling */
+.flashcard {
+  background: var(--card);
+  box-shadow: 0 2px 8px var(--shadow-tint);
+  transition: all 0.2s ease;
+}
+
+.flashcard:hover {
+  box-shadow: 0 3px 10px var(--shadow-tint);
+  transform: translateY(-1px);
+  background: var(--card);
+}
+
+.flashcard-front, .flashcard-back {
+  padding: 20px;
+  border-radius: 6px;
+}
+
+/* MCQ styling */
+.mcq-option {
+  background: #2A2A40; /* Matching flashcard background */
+  transition: all 0.2s ease;
+  padding: 12px 15px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.mcq-option:hover {
+  border-color: var(--accent2);
+  box-shadow: 0 2px 5px var(--shadow-tint);
+  background: var(--card);
+}
+
+.mcq-option.selected {
+  border-color: var(--accent2);
+  background: var(--card);
+  box-shadow: 0 1px 3px var(--shadow-tint);
+  color: var(--accent1);
+  font-weight: 600;
+}
+
+/* Category buttons styling */
+.category-btn, .mcq-category-btn {
+  background: var(--bg);
+  color: var(--accent2);
+  padding: 8px 15px;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  text-shadow: 0 0 8px var(--shadow-tint);
+}
+
+.category-btn:hover, .mcq-category-btn:hover {
+  transform: translateY(-2px) !important;
+}
+
+.category-btn.selected, .mcq-category-btn.selected {
+  background: var(--hover);
+  border-color: var(--accent1);
+  box-shadow: 0 0 10px var(--shadow-tint);
+  color: var(--accent1);
+  text-shadow: 0 0 8px var(--shadow-tint);
+}
+@import url('https://api.fontshare.com/v2/css?f[]=clash-display@700,600,500,400&display=swap');
+
+body {
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: 'Montserrat', 'Raleway', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  letter-spacing: 0.01em;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Creative background pattern - Cyberpunk style */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--bg);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Clean body background */
+body {
+  background-color: var(--bg);
+}
+.container {
+    max-width: 900px;
+    margin: 50px auto;
+    background: var(--card);
+    border-radius: 12px;
+    box-shadow: 0 4px 16px var(--shadow-tint);
+    padding: 40px;
+    position: relative;
+    overflow: hidden;
+  }
+
+
+h1, h2 {
+  color: var(--text-primary);
+  text-align: center;
+  margin-bottom: 24px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* Modern heading styles */
+h1 {
+  font-size: 42px;
+  font-weight: 700;
+  color: var(--accent2);
+  text-align: center;
+  margin-bottom: 30px;
+  position: relative;
+  line-height: 1.2;
+  font-family: 'Montserrat', 'Raleway', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+h1::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background: var(--accent1);
+  border-radius: 2px;
+}
+
+
+
+/* Responsive heading adjustments */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2.2rem;
+    margin-bottom: 28px;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 1.8rem;
+    margin-bottom: 24px;
+  }
+}
+
+/* Layout Components */
+.section-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+}
+
+.section-header .mode-btn {
+  background: var(--accent1);
+  color: black;
+  font-weight: 600;
+  padding: 12px 24px;
+  border-radius: 30px;
+  box-shadow: 0 4px 15px var(--shadow-tint);
+  font-size: 14px;
+  letter-spacing: 0.8px;
+  border: none;
+  text-transform: uppercase;
+}
+
+.section-header .mode-btn:hover {
+  background: var(--accent1);
+  color: black;
+  transform: none;
+  box-shadow: 0 4px 15px var(--shadow-tint);
+}
+
+.controls-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+#showMcqsBtn {
+  margin-left: auto;
+}
+
+#addMcqBtn {
+  margin-left: auto;
+  background: var(--error);
+  color: white;
+  font-weight: 600;
+  padding: 12px 24px;
+  border-radius: 30px;
+  box-shadow: 0 4px 15px rgba(255, 85, 85, 0.3);
+  font-size: 14px;
+  letter-spacing: 0.8px;
+  border: none;
+  text-transform: uppercase;
+}
+
+#addFlashcardBtn {
+  margin-left: auto;
+  background: var(--error);
+  color: white;
+  font-weight: 600;
+  padding: 12px 24px;
+  border-radius: 30px;
+  box-shadow: 0 4px 15px rgba(255, 85, 85, 0.3);
+  font-size: 14px;
+  letter-spacing: 0.8px;
+  border: none;
+  text-transform: uppercase;
+}
+
+#showMcqsBtn:hover {
+  background: var(--accent1);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px var(--shadow-tint);
+  color: black;
+}
+
+#addMcqBtn:hover {
+  background: #d44637;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 85, 85, 0.4);
+  color: white;
+}
+
+#addFlashcardBtn:hover {
+  background: #d44637;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 85, 85, 0.4);
+  color: white;
+}
+
+/* Custom category buttons */
+#addCustomCategoryBtn, #addMcqCustomCategoryBtn {
+  background: var(--accent2);
+  color: black;
+  font-weight: 500;
+  padding: 8px 15px;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px var(--shadow-tint);
+  letter-spacing: 0.3px;
+}
+
+#addCustomCategoryBtn:hover, #addMcqCustomCategoryBtn:hover {
+  background: var(--accent2);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 6px var(--shadow-tint);
+  filter: brightness(1.1);
+}
+
+/* Create buttons */
+#createFlashcardBtn, #createMcqBtn {
+  background: var(--accent1);
+  color: black;
+  font-weight: 600;
+  padding: 12px 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px var(--shadow-tint);
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  width: 100%;
+  margin-top: 20px;
+}
+
+#createFlashcardBtn:hover, #createMcqBtn:hover {
+  background: var(--success);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px var(--shadow-tint);
+}
+
+/* See Correct Answer button */
+.see-correct-btn {
+  background: var(--accent1);
+  color: black;
+  font-weight: 600;
+  padding: 12px 24px;
+  border-radius: 30px;
+  margin-left: 10px;
+  box-shadow: 0 4px 15px var(--shadow-tint);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 14px;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.see-correct-btn:hover {
+  background: var(--accent1);
+  transform: translateY(-2px) !important;
+  color: black;
+  box-shadow: 0 6px 20px var(--shadow-tint);
+}
+
+/* MCQ Submit button */
+.mcq-submit-btn {
+  background: var(--accent1);
+  color: white;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 6px;
+  margin-top: 12px;
+  box-shadow: 0 2px 4px var(--shadow-tint);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: block;
+  width: 100%;
+}
+
+.mcq-submit-btn:hover {
+  background: var(--accent2);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 6px var(--shadow-tint);
+}
+
+/* Edit and Delete MCQ buttons */
+.edit-mcq-btn, .delete-mcq-btn {
+  background: var(--accent2);
+  color: white;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px var(--shadow-tint);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 13px;
+}
+
+.delete-mcq-btn {
+  background: var(--error);
+}
+
+.edit-mcq-btn:hover, .delete-mcq-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 5px var(--shadow-tint);
+}
+
+.delete-mcq-btn:hover {
+  background: #d44637;
+}
+
+.category-bar, .mcq-category-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.flashcard-controls, .mcq-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.resource-filter-btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.resource-filter-btns .accent-btn {
+  background: var(--accent1);
+  color: black;
+  font-weight: 600;
+  padding: 12px 24px;
+  border-radius: 30px;
+  box-shadow: 0 4px 15px var(--shadow-tint);
+  font-size: 14px;
+  letter-spacing: 0.8px;
+  border: none;
+  text-transform: uppercase;
+}
+
+.resource-filter-btns .accent-btn:hover {
+  background: var(--accent1);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px var(--shadow-tint);
+  color: black;
+}
+
+.mcq-options-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.form-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.form-row select {
+  flex: 1;
+}
+
+.form-row input {
+  flex: 1;
+}
+
+.form-row button {
+  white-space: nowrap;
+  padding: 8px 16px;
+  font-size: 0.9rem;
+}
+
+/* Responsive layout adjustments */
+@media (max-width: 768px) {
+  .controls-container,
+  .flashcard-controls,
+  .mcq-controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  
+  .category-bar,
+  .mcq-category-bar {
+    justify-content: center;
+  }
+  
+  .form-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .form-row button {
+    align-self: flex-start;
+  }
+}
+/* --- BUTTONS --- */
+button, .accent-btn, .mode-btn {
+  font-family: 'Clash Display', sans-serif;
+  font-size: 0.77rem;
+  font-weight: 600;
+  border: 1px solid var(--accent2);
+  border-radius: 12px;
+  padding: 12px 25px;
+  margin: 0 6px;
+  background: var(--card);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  outline: none;
+  position: relative;
+  box-shadow: 0 4px 16px var(--shadow-tint);
+}
+
+button:hover, .accent-btn:hover {
+  background: var(--accent1);
+  color: black;
+  transform: none;
+  border-color: var(--accent1);
+  box-shadow: 0 4px 15px var(--shadow-tint);
+}
+
+.mode-btn:hover {
+  background: var(--accent1);
+  transform: none;
+  border-color: var(--accent1);
+  box-shadow: 0 4px 15px var(--shadow-tint);
+  color: black;
+}
+
+button:active, .accent-btn:active, .mode-btn:active {
+  transform: none;
+}
+/* --- CATEGORY BUTTONS --- */
+.category-btn, .mcq-category-btn {
+  background: var(--accent1);
+  color: black;
+  font-weight: 600;
+  padding: 12px 24px;
+  border-radius: 30px;
+  box-shadow: 0 4px 15px var(--shadow-tint);
+  font-size: 14px;
+  letter-spacing: 0.8px;
+  border: none;
+  text-transform: uppercase;
+  margin: 0 4px 4px 0;
+  cursor: pointer;
+}
+
+.category-btn.selected, .mcq-category-btn.selected {
+  background: var(--accent1);
+  color: black;
+  box-shadow: 0 4px 15px var(--shadow-tint);
+}
+
+/* Apply hover effects for category buttons */
+.category-btn:hover, .mcq-category-btn:hover {
+  background: var(--accent1);
+  color: black;
+  transform: translateY(-2px) !important;
+  box-shadow: none;
+}
+/* --- INPUTS & SELECTS --- */
+input, select, textarea {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--accent2);
+  background: var(--bg);
+  color: var(--text-primary);
+  font-size: 14px;
+  margin-bottom: 12px;
+  width: 100%;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+/* Make the resource form fields smaller */
+#resourceForm input, #resourceForm select {
+  padding: 8px 12px;
+  max-height: 40px;
+  font-size: 13px;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--accent1);
+  box-shadow: 0 0 0 3px var(--shadow-tint);
+}
+
+/* Modal content width adjustments */
+.modal-content input,
+.modal-content select,
+.modal-content textarea {
+  width: 100%;
+  max-width: 450px;
+  padding: 12px 16px;
+  font-size: 1rem;
+  border-radius: 10px;
+  margin-bottom: 12px;
+}
+
+.modal-content textarea {
+  min-height: 80px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.modal-content .form-row {
+  width: 100%;
+  max-width: 450px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.modal-content .form-row select {
+  flex: 2;
+}
+
+.modal-content .form-row input {
+  flex: 1;
+}
+
+.modal-content .form-row button {
+  padding: 10px 20px;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.modal-content form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.modal-content label {
+  width: 100%;
+  max-width: 450px;
+  text-align: left;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-family: 'Montserrat', 'Raleway', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.modal-content h2 {
+  margin-bottom: 24px;
+  text-align: center;
+  font-size: 1.6rem;
+}
+
+.modal-content button[type="submit"] {
+  margin-top: 16px;
+  width: 100%;
+  max-width: 450px;
+  padding: 14px 20px;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+input:focus, select:focus, textarea:focus {
+  outline: 2px solid var(--accent1);
+  border-color: var(--accent1);
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.2);
+}
+/* Exclude checkboxes from focus styles */
+input[type="checkbox"]:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+label {
+  color: var(--text-secondary);
+  font-weight: 600;
+  margin-bottom: 6px;
+  display: block;
+  font-family: 'Montserrat', 'Raleway', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+.char-count {
+  position: absolute;
+  bottom: 6px;
+  right: 12px;
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+}
+/* --- FORM CONTAINER --- */
+.form-container {
+  background: var(--card);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--accent2);
+  border-radius: 20px;
+  padding: 32px;
+  margin-top: 20px;
+  box-shadow: 0 8px 32px var(--shadow-tint);
+}
+
+.form-container h2 {
+  text-align: center;
+  margin-bottom: 32px;
+  color: var(--accent2);
+  font-size: 1.8rem;
+  letter-spacing: 0.5px;
+}
+
+.form-container form {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.form-container input,
+.form-container select,
+.form-container textarea {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 1rem;
+  border-radius: 10px;
+  margin-bottom: 16px;
+  background: rgba(10, 10, 10, 0.7);
+  color: var(--text-primary);
+  border: 1px solid var(--accent2);
+  transition: all 0.3s ease;
+}
+
+.form-container input:focus,
+.form-container select:focus,
+.form-container textarea:focus {
+  outline: 2px solid var(--focus-glow);
+  box-shadow: 0 0 8px var(--focus-glow);
+  border-color: var(--accent1);
+}
+
+.form-container label {
+  color: var(--accent1);
+  font-weight: 600;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.form-container .form-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.form-container .form-row select {
+  flex: 2;
+}
+
+.form-container .form-row input {
+  flex: 1;
+}
+
+.form-container .form-row button {
+  white-space: nowrap;
+  padding: 10px 20px;
+  font-size: 0.9rem;
+}
+
+.form-container button[type="submit"] {
+  width: 100%;
+  padding: 14px 20px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-top: 20px;
+  transition: all 0.3s ease;
+}
+
+.form-container button[type="submit"]:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 
+    0 8px 24px var(--shadow-tint),
+    0 0 0 3px var(--shadow-tint) !important;
+  background: var(--accent1) !important;
+}
+
+.form-container .mcq-options-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.form-container .mcq-options-group input {
+  margin-bottom: 0;
+}
+
+/* Responsive adjustments for form container */
+@media (max-width: 768px) {
+  .form-container {
+    padding: 24px 20px;
+  }
+  
+  .form-container .form-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+  
+  .form-container .form-row button {
+    align-self: flex-start;
+  }
+}
+
+/* --- MODAL (keeping for any future use) --- */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0; top: 0; width: 100vw; height: 100vh;
+  background: rgba(10,10,10,0.75);
+  backdrop-filter: blur(3px);
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+.modal-content {
+  background: var(--card);
+  border-radius: 16px;
+  border: 1px solid var(--accent1);
+  box-shadow: 0 6px 32px var(--shadow-tint);
+  padding: 32px 28px 28px 28px;
+  min-width: 500px;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  animation: modalIn 0.22s cubic-bezier(.4,2,.6,1);
+}
+
+
+@keyframes modalIn {
+  from { transform: scale(0.92) translateY(30px); opacity: 0; }
+  to   { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+/* Modal responsive styles */
+@media (max-width: 768px) {
+  .modal-content {
+    min-width: 90vw;
+    padding: 24px 20px 20px 20px;
+    max-height: 95vh;
+  }
+  
+  .modal-content input,
+  .modal-content select,
+  .modal-content textarea {
+    max-width: 100%;
+  }
+  
+  .modal-content .form-row {
+    max-width: 100%;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .modal-content label {
+    max-width: 100%;
+  }
+  
+  .modal-content button[type="submit"] {
+    max-width: 100%;
+  }
+  
+  .modal-content h2 {
+    font-size: 1.4rem;
+    margin-bottom: 20px;
+  }
+}
+
+
+.close-btn {
+  position: absolute;
+  top: 16px;
+  right: 18px;
+  font-size: 1.5rem;
+  color: var(--accent3);
+  cursor: pointer;
+  background: none;
+  border: none;
+  transition: color 0.18s;
+}
+.close-btn:hover {
+  color: var(--error);
+}
+/* --- FLASHCARDS & MCQ CARDS --- */
+.flashcards-list {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  padding: 24px 0;
+  width: 100%;
+}
+
+.mcq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  padding: 24px 0;
+  width: 70%;
+  margin: 0 auto; /* Center horizontally */
+}
+
+.flashcard, .mcq-card {
+  background: #2A2A40; /* Slightly lighter than var(--card) for distinction */
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 4px 8px var(--shadow-tint);
+  margin-bottom: 20px;
+  position: relative;
+  transition: all 0.2s ease;
+  overflow: hidden;
+}
+
+
+
+.flashcard:hover, .mcq-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px var(--shadow-tint);
+}
+
+
+
+.flashcard {
+  width: 50%;
+  height: 0;
+  padding-bottom: 50%; /* Makes height equal to width (square) */
+  perspective: 680px;
+  margin: 0 auto 20px auto; /* Center horizontally with auto left/right margins */
+  cursor: pointer;
+  outline: none;
+}
+
+.flashcard-inner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.32s cubic-bezier(.4,2,.6,1);
+  transform-style: preserve-3d;
+}
+
+.flashcard.flipped .flashcard-inner {
+  transform: rotateY(180deg);
+}
+
+.flashcard-front, .flashcard-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  background: #2A2A40; /* Slightly lighter than var(--card) for distinction */
+  color: var(--text-primary);
+  border-radius: 10px;
+  box-shadow: 0 2px 8px var(--shadow-tint);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 500;
+  padding: 20px;
+  text-align: center;
+  line-height: 1.5;
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+/* Removed animation line above flashcard */
+
+.flashcard-back {
+  transform: rotateY(180deg);
+  background: var(--accent1);
+  color: white;
+  font-weight: 600;
+}
+
+.flashcard-category {
+  margin-top: 6px;
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  text-align: right;
+}
+
+.flashcard-actions {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  z-index: 10;
+  display: flex;
+  gap: 8px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.flashcard {
+  position: relative;
+}
+
+.flashcard:hover .flashcard-actions {
+  opacity: 1;
+}
+
+.edit-btn, .edit-mcq-btn {
+  background: var(--accent1);
+  color: black;
+  font-size: 0.8rem;
+  font-weight: 700;
+  font-family: 'Montserrat', 'Raleway', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  cursor: pointer;
+  border-radius: 30px;
+  padding: 8px 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  min-width: 65px;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 4px 15px var(--shadow-tint);
+  transition: all 0.2s ease;
+  z-index: 10;
+  border: none;
+}
+
+.edit-btn:hover, .edit-mcq-btn:hover {
+  background: var(--accent1);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px var(--shadow-tint);
+}
+
+.delete-btn, .delete-mcq-btn {
+  background: var(--error);
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 30px;
+  padding: 8px 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  min-width: 65px;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 4px 15px rgba(255, 85, 85, 0.3);
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.delete-btn:hover, .delete-mcq-btn:hover {
+  background: var(--error);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(255, 85, 85, 0.4);
+  z-index: 10;
+  color: white;
+  text-align: center;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+/* Removed all hover effects for buttons */
+
+/* --- MCQ Specific --- */
+.mcq-card {
+  width: 100%;
+  background: var(--card);
+  border-radius: 10px;
+  box-shadow: 0 2px 8px var(--shadow-tint);
+  padding: 30px;
+  margin-bottom: 16px;
+  position: relative;
+  border: none;
+  overflow: hidden;
+  max-width: 100%;
+}
+
+
+
+@keyframes shimmer {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.mcq-actions {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  z-index: 2;
+  display: flex;
+  gap: 6px;
+}
+
+.mcq-question {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--text-primary);
+}
+
+.mcq-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.mcq-option {
+  display: flex;
+  align-items: center;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 12px;
+  transition: all 0.15s ease;
+  margin-bottom: 4px;
+}
+
+.mcq-option input[type="checkbox"] {
+  transform: scale(1.2);
+  margin: 0;
+  cursor: pointer;
+  margin-right: 8px;
+  width: 16px;
+  height: 16px;
+}
+
+.mcq-option:hover {
+  background: rgba(59, 130, 246, 0.1);
+  border-color: rgba(59, 130, 246, 0.3);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15);
+}
+
+.mcq-option-text {
+  font-size: 0.97rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  font-family: 'Clash Display', sans-serif;
+  letter-spacing: 0.01em;
+  margin-left: auto;
+  width: 27px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.mcq-option.mcq-correct {
+  background: var(--accent1);
+  color: #000;
+}
+
+.mcq-option.mcq-correct .mcq-option-text {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.mcq-option.mcq-correct input[type="checkbox"] {
+  transform: scale(1.2);
+  margin: 0;
+  cursor: pointer;
+  margin-right: 8px;
+  width: 16px;
+  height: 16px;
+  opacity: 1;
+  visibility: visible;
+}
+
+.mcq-option.mcq-wrong {
+  background: var(--error);
+  color: #fff;
+}
+
+.mcq-option.mcq-wrong .mcq-option-text {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.mcq-option.mcq-wrong input[type="checkbox"] {
+  transform: scale(1.2);
+  margin: 0;
+  cursor: pointer;
+  margin-right: 8px;
+  width: 16px;
+  height: 16px;
+  opacity: 1;
+  visibility: visible;
+}
+
+.mcq-submit-btn {
+  margin-top: 10px;
+  background: var(--accent1);
+  color: var(--card);
+  border: none;
+  border-radius: 8px;
+  padding: 10px 0;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.mcq-submit-btn:disabled {
+  background: var(--text-secondary);
+  color: var(--card);
+  cursor: not-allowed;
+}
+
+.mcq-feedback {
+  margin-top: 8px;
+  font-size: 1.05rem;
+  min-height: 24px;
+}
+
+.mcq-category {
+  margin-top: 6px;
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  text-align: right;
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 900px) {
+  .container {
+    max-width: 98vw;
+    padding: 18px 4vw 18px 4vw;
+  }
+  .flashcards-list {
+    gap: 12px;
+  }
+  .mcq-list {
+    gap: 12px;
+    width: 70%;
+    margin: 0 auto; /* Center horizontally */
+  }
+  .flashcard {
+    width: 50%;
+    min-width: 220px;
+    max-width: 50%;
+    height: 0;
+    padding-bottom: 50%; /* Makes height equal to width (square) */
+    margin: 0 auto 20px auto; /* Center horizontally */
+  }
+  .mcq-card {
+    width: 100%;
+    min-width: 220px;
+    max-width: 100%;
+  }
+} 
+.resource-card {
+  background: var(--card);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px var(--shadow-tint);
+  padding: 20px;
+  margin-bottom: 20px;
+  transition: all 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+
+.resource-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--accent2);
+  opacity: 0.7;
+}
+.resource-card:hover {
+  box-shadow: 0 6px 24px var(--shadow-tint);
+  transform: translateY(-2px) scale(1.02);
+}
+.resource-title {
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+.resource-link {
+  color: var(--accent1);
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  transition: color 0.18s, border-bottom 0.18s;
+  display: inline;
+  word-break: break-all;
+  margin-bottom: 2px;
+}
+.resource-link:hover {
+  color: var(--accent1);
+  border-bottom: 2px solid var(--accent1);
+}
+.resource-category {
+  color: var(--accent1);
+  font-size: 0.97rem;
+  margin-top: 2px;
+  text-align: right;
+  font-weight: 600;
+}
+.resource-controls {
+  margin-top: 40px;
+}
+
+.resource-filter-btns {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 32px;
+  row-gap: 16px;
+}
+
+#resourceForm {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-bottom: 0;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 24px;
+  margin-bottom: 32px;
+  box-shadow: 0 2px 8px var(--shadow-tint);
+}
+
+
+
+#resourceForm input,
+#resourceForm select {
+  margin-bottom: 0;
+}
+
+#resourceForm button[type="submit"] {
+  background: var(--accent3);
+  color: white;
+  font-weight: 700;
+  padding: 14px 28px;
+  border-radius: 30px;
+  box-shadow: 0 4px 15px var(--shadow-tint);
+  font-size: 15px;
+  letter-spacing: 1px;
+  border: none;
+  text-transform: uppercase;
+  margin-top: 10px;
+}
+
+#resourceForm label {
+  margin-bottom: 8px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+.resource-list {
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+}
+.resource-list[style*='display:none'] {
+  display: none !important;
+}
+#resourceForm {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-bottom: 0;
+}
+#resourceForm input,
+#resourceForm select {
+  margin-bottom: 0;
+}
+
+#resourceForm button[type="submit"]:hover {
+  background: var(--accent3);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px var(--shadow-tint);
+  color: white;
+}
+#resourceForm label {
+  margin-bottom: 2px;
+}
+.no-resources-message {
+  color: var(--text-primary);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 14px 0;
+  text-align: center;
+  font-size: 16px;
+  margin: 18px 0;
+}
+@media (max-width: 700px) {
+  .container {
+    max-width: 98vw;
+    padding: 18px 2vw 18px 2vw;
+  }
+  .resource-card {
+    padding: 14px 8px 10px 8px;
+  }
+  .resource-list {
+    margin-top: 10px;
+  }
+}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>REVISION TOOLS</h1>
+    
+    <!-- Main Flashcards Section -->
+    <div id="flashcardsSection">
+      <div class="section-header">
+        <button id="showMcqsBtn" class="mode-btn">Practice MCQs...</button>
+      </div>
+      <div class="flashcard-controls">
+        <div class="category-bar" id="categoryBar">
+          <button class="accent-btn category-btn selected" data-category="All">All</button>
+          <button class="accent-btn category-btn" data-category="Maths">Maths</button>
+          <button class="accent-btn category-btn" data-category="Computer Science">Computer Science</button>
+          <!-- Custom categories will be added here -->
+        </div>
+        <button id="addFlashcardBtn" class="accent-btn">Add New Flashcard</button>
+      </div>
+      <div id="flashcardsList" class="flashcards-list">
+        <!-- Flashcards will be displayed here -->
+      </div>
+    </div>
+
+    <!-- MCQs Section -->
+    <div id="mcqsSection" style="display: none;">
+      <div class="section-header">
+        <button id="backToFlashcardsBtn" class="mode-btn">Back to Flashcards</button>
+      </div>
+      <div class="mcq-controls">
+        <div class="mcq-category-bar" id="mcqCategoryBar">
+          <button class="accent-btn mcq-category-btn selected" data-category="All">All</button>
+          <button class="accent-btn mcq-category-btn" data-category="Maths">Maths</button>
+          <button class="accent-btn mcq-category-btn" data-category="Computer Science">Computer Science</button>
+          <!-- Custom categories will be added here -->
+        </div>
+        <button id="addMcqBtn" class="accent-btn">Add New MCQ</button>
+      </div>
+      <div id="mcqList" class="mcq-list">
+        <!-- MCQs will be displayed here -->
+      </div>
+    </div>
+
+    <!-- Add Flashcard Page -->
+    <div id="addFlashcardPage" style="display: none;">
+      <div class="section-header">
+        <button id="backFromFlashcardBtn" class="mode-btn">Back to Flashcards</button>
+      </div>
+      <div class="form-container">
+        <h2>Add New Flashcard</h2>
+        <form id="flashcardForm" autocomplete="off">
+          <label for="modalCategory">Category</label>
+          <div class="form-row">
+            <select id="modalCategory">
+              <option value="Maths">Maths</option>
+              <option value="Computer Science">Computer Science</option>
+              <option value="Other">Other</option>
+            </select>
+            <input type="text" id="customCategoryInput" placeholder="Add custom category" style="display: none;" maxlength="20">
+            <button type="button" id="addCustomCategoryBtn">+ Custom</button>
+          </div>
+          <label for="modalQuestion">Question</label>
+          <div style="position: relative;">
+            <input type="text" id="modalQuestion" maxlength="60" required>
+            <span id="questionCharCount" class="char-count">0/60</span>
+          </div>
+          <label for="modalAnswer">Answer</label>
+          <div style="position: relative;">
+            <textarea id="modalAnswer" maxlength="300" required rows="4"></textarea>
+            <span id="answerCharCount" class="char-count">0/300</span>
+          </div>
+          <button type="submit" id="createFlashcardBtn" class="accent-btn">Create</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Add MCQ Page -->
+    <div id="addMcqPage" style="display: none;">
+      <div class="section-header">
+        <button id="backFromMcqBtn" class="mode-btn">Back to MCQs</button>
+      </div>
+      <div class="form-container">
+        <h2>Add New MCQ</h2>
+        <form id="mcqForm" autocomplete="off">
+          <label for="mcqModalCategory">Category</label>
+          <div class="form-row">
+            <select id="mcqModalCategory">
+              <option value="Maths">Maths</option>
+              <option value="Computer Science">Computer Science</option>
+              <option value="Other">Other</option>
+            </select>
+            <input type="text" id="mcqCustomCategoryInput" placeholder="Add custom category" style="display: none;" maxlength="20">
+            <button type="button" id="addMcqCustomCategoryBtn">+ Custom</button>
+          </div>
+          <label for="mcqModalQuestion">Question</label>
+          <div style="position: relative;">
+            <input type="text" id="mcqModalQuestion" maxlength="100" required>
+            <span id="mcqQuestionCharCount" class="char-count">0/100</span>
+          </div>
+          <label>Options</label>
+          <div class="mcq-options-group">
+            <input type="text" class="mcq-option" id="mcqOption1" maxlength="60" required placeholder="Option 1">
+            <input type="text" class="mcq-option" id="mcqOption2" maxlength="60" required placeholder="Option 2">
+            <input type="text" class="mcq-option" id="mcqOption3" maxlength="60" required placeholder="Option 3">
+            <input type="text" class="mcq-option" id="mcqOption4" maxlength="60" required placeholder="Option 4">
+          </div>
+          <label for="mcqCorrectOption">Correct Option</label>
+          <select id="mcqCorrectOption" required>
+            <option value="0">Option 1</option>
+            <option value="1">Option 2</option>
+            <option value="2">Option 3</option>
+            <option value="3">Option 4</option>
+          </select>
+          <button type="submit" id="createMcqBtn" class="accent-btn">Create</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <script src="revision.js"></script>
+
+
+  <script>
+    // JS for Revision Tools will go here
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Page elements
+  const flashcardsSection = document.getElementById('flashcardsSection');
+  const mcqsSection = document.getElementById('mcqsSection');
+  const addFlashcardPage = document.getElementById('addFlashcardPage');
+  const addMcqPage = document.getElementById('addMcqPage');
+  
+  // Navigation buttons
+  const showMcqsBtn = document.getElementById('showMcqsBtn');
+  const backToFlashcardsBtn = document.getElementById('backToFlashcardsBtn');
+  const addFlashcardBtn = document.getElementById('addFlashcardBtn');
+  const backFromFlashcardBtn = document.getElementById('backFromFlashcardBtn');
+  const addMcqBtn = document.getElementById('addMcqBtn');
+  const backFromMcqBtn = document.getElementById('backFromMcqBtn');
+
+  // Form elements
+  const flashcardForm = document.getElementById('flashcardForm');
+  const modalCategory = document.getElementById('modalCategory');
+  const addCustomCategoryBtn = document.getElementById('addCustomCategoryBtn');
+  const customCategoryInput = document.getElementById('customCategoryInput');
+  const modalQuestion = document.getElementById('modalQuestion');
+  const modalAnswer = document.getElementById('modalAnswer');
+  const questionCharCount = document.getElementById('questionCharCount');
+  const answerCharCount = document.getElementById('answerCharCount');
+
+  // MCQ form elements
+  const mcqForm = document.getElementById('mcqForm');
+  const mcqModalCategory = document.getElementById('mcqModalCategory');
+  const addMcqCustomCategoryBtn = document.getElementById('addMcqCustomCategoryBtn');
+  const mcqCustomCategoryInput = document.getElementById('mcqCustomCategoryInput');
+  const mcqModalQuestion = document.getElementById('mcqModalQuestion');
+  const mcqQuestionCharCount = document.getElementById('mcqQuestionCharCount');
+
+  // Navigation functions
+  function showPage(pageId) {
+    // Hide all pages
+    flashcardsSection.style.display = 'none';
+    mcqsSection.style.display = 'none';
+    addFlashcardPage.style.display = 'none';
+    addMcqPage.style.display = 'none';
+    
+    // Show the requested page
+    document.getElementById(pageId).style.display = 'block';
+  }
+
+  // Navigation event listeners
+  showMcqsBtn.addEventListener('click', function() {
+    showPage('mcqsSection');
+  });
+
+  backToFlashcardsBtn.addEventListener('click', function() {
+    showPage('flashcardsSection');
+  });
+
+  addFlashcardBtn.addEventListener('click', function() {
+    showPage('addFlashcardPage');
+    flashcardForm.reset();
+    customCategoryInput.style.display = 'none';
+    questionCharCount.textContent = '0/60';
+    answerCharCount.textContent = '0/300';
+  });
+
+  backFromFlashcardBtn.addEventListener('click', function() {
+    showPage('flashcardsSection');
+  });
+
+  addMcqBtn.addEventListener('click', function() {
+    showPage('addMcqPage');
+    mcqForm.reset();
+    mcqCustomCategoryInput.style.display = 'none';
+    mcqQuestionCharCount.textContent = '0/100';
+  });
+
+  backFromMcqBtn.addEventListener('click', function() {
+    showPage('mcqsSection');
+  });
+
+  // Show custom category input
+  addCustomCategoryBtn.addEventListener('click', function() {
+    customCategoryInput.style.display = 'inline-block';
+    customCategoryInput.focus();
+  });
+
+  // Add custom category to dropdown when user enters and presses Enter or leaves input
+  customCategoryInput.addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      addCustomCategory();
+    }
+  });
+  customCategoryInput.addEventListener('blur', addCustomCategory);
+
+  function addCustomCategory() {
+    const value = customCategoryInput.value.trim();
+    if (value) {
+      // Add to dropdown if not already present
+      let exists = false;
+      for (let i = 0; i < modalCategory.options.length; i++) {
+        if (modalCategory.options[i].value.toLowerCase() === value.toLowerCase()) {
+          exists = true;
+          break;
+        }
+      }
+      if (!exists) {
+        const option = document.createElement('option');
+        option.value = value;
+        option.textContent = value;
+        modalCategory.appendChild(option);
+      }
+      modalCategory.value = value;
+    }
+    customCategoryInput.value = '';
+    customCategoryInput.style.display = 'none';
+  }
+
+  // Live character count for question
+  modalQuestion.addEventListener('input', function() {
+    questionCharCount.textContent = modalQuestion.value.length + '/60';
+  });
+  // Live character count for answer
+  modalAnswer.addEventListener('input', function() {
+    answerCharCount.textContent = modalAnswer.value.length + '/300';
+  });
+
+  // --- Flashcard logic ---
+  const flashcardsList = document.getElementById('flashcardsList');
+  const categoryBar = document.getElementById('categoryBar');
+  let flashcards = [];
+  let categories = ['All', 'Maths', 'Computer Science'];
+  let selectedCategory = 'All';
+  let editingIndex = null; // Track if editing
+
+  // Handle flashcard creation or edit
+  flashcardForm.addEventListener('submit', function(event) {
+    event.preventDefault();
+    const question = modalQuestion.value.trim();
+    const answer = modalAnswer.value.trim();
+    let category = modalCategory.value.trim();
+    if (!categories.includes(category)) {
+      categories.push(category);
+      addCategoryToBar(category);
+    }
+    if (editingIndex !== null) {
+      // Edit existing
+      flashcards[editingIndex] = { question, answer, category };
+      editingIndex = null;
+    } else {
+      // Add new
+      flashcards.push({ question, answer, category });
+    }
+    renderFlashcards();
+    showPage('flashcardsSection');
+    saveFlashcards(); // [localStorage]
+  });
+
+  // Add new category button to bar
+  function addCategoryToBar(category) {
+    if (category === 'All') return;
+    const btn = document.createElement('button');
+    btn.className = 'category-btn';
+    btn.dataset.category = category;
+    btn.textContent = category;
+    categoryBar.appendChild(btn);
+  }
+
+  // Category bar click (filter)
+  categoryBar.addEventListener('click', function(event) {
+    if (event.target.classList.contains('category-btn')) {
+      // Remove selected from all
+      Array.from(categoryBar.children).forEach(btn => btn.classList.remove('selected'));
+      event.target.classList.add('selected');
+      selectedCategory = event.target.dataset.category;
+      renderFlashcards();
+    }
+  });
+
+  // Render flashcards (with delete/edit)
+  function renderFlashcards() {
+    flashcardsList.innerHTML = '';
+    let filtered = flashcards;
+    if (selectedCategory !== 'All') {
+      filtered = flashcards.filter(f => f.category === selectedCategory);
+    }
+    filtered.forEach((card, idx) => {
+      // Find the real index in flashcards array
+      const realIdx = flashcards.indexOf(card);
+      const cardDiv = document.createElement('div');
+      cardDiv.className = 'flashcard';
+      cardDiv.tabIndex = 0;
+      cardDiv.innerHTML = `
+        <div class="flashcard-actions">
+                  <button class="edit-btn" title="Edit" data-idx="${realIdx}">Edit</button>
+        <button class="delete-btn" title="Delete" data-idx="${realIdx}">Delete</button>
+        </div>
+        <div class="flashcard-inner">
+          <div class="flashcard-front">${escapeHTML(card.question)}</div>
+          <div class="flashcard-back">${escapeHTML(card.answer)}</div>
+        </div>
+        <div class="flashcard-category">${card.category}</div>
+      `;
+      // Flip on click (not on action buttons)
+      cardDiv.addEventListener('click', function(e) {
+        if (e.target.classList.contains('edit-btn') || e.target.classList.contains('delete-btn')) return;
+        cardDiv.classList.toggle('flipped');
+      });
+      flashcardsList.appendChild(cardDiv);
+    });
+    // Add event listeners for delete/edit
+    flashcardsList.querySelectorAll('.delete-btn').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const idx = parseInt(btn.dataset.idx);
+        flashcards.splice(idx, 1);
+        renderFlashcards();
+        saveFlashcards(); // [localStorage]
+      });
+    });
+    flashcardsList.querySelectorAll('.edit-btn').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const idx = parseInt(btn.dataset.idx);
+        const card = flashcards[idx];
+        // Pre-fill form
+        modalQuestion.value = card.question;
+        modalAnswer.value = card.answer;
+        modalCategory.value = card.category;
+        questionCharCount.textContent = card.question.length + '/60';
+        answerCharCount.textContent = card.answer.length + '/300';
+        editingIndex = idx;
+        showPage('addFlashcardPage');
+        customCategoryInput.style.display = 'none';
+      });
+    });
+  }
+
+  // Escape HTML for safe display
+  function escapeHTML(str) {
+    return str.replace(/&/g, '&amp;')
+              .replace(/</g, '&lt;')
+              .replace(/>/g, '&gt;')
+              .replace(/"/g, '&quot;')
+              .replace(/'/g, '&#39;');
+  }
+
+  // Add initial categories to bar (if not present)
+  function ensureInitialCategories() {
+    const present = Array.from(categoryBar.children).map(btn => btn.dataset.category);
+    ['All', 'Maths', 'Computer Science'].forEach(cat => {
+      if (!present.includes(cat)) addCategoryToBar(cat);
+    });
+  }
+  ensureInitialCategories();
+
+  // --- Flashcard CSS for flip effect (inject if not present) ---
+  if (!document.getElementById('flashcard-style')) {
+    const style = document.createElement('style');
+    style.id = 'flashcard-style';
+    style.textContent = `
+      .flashcards-list {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        width: 100%;
+      }
+      .flashcard {
+        width: 50%;
+        height: 0;
+        padding-bottom: 35%; /* Makes height 70% of width */
+        perspective: 800px;
+        margin: 0 auto 20px auto; /* Center horizontally */
+        cursor: pointer;
+        outline: none;
+        position: relative;
+      }
+      .flashcard-inner {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        transition: transform 0.32s cubic-bezier(.4,2,.6,1);
+        transform-style: preserve-3d;
+      }
+      .flashcard.flipped .flashcard-inner {
+        transform: rotateY(180deg);
+      }
+      .flashcard-front, .flashcard-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+        background: var(--card);
+        color: var(--text-primary);
+        border-radius: 12px;
+        box-shadow: 0 2px 8px var(--shadow-tint);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.08rem;
+        padding: 18px;
+        text-align: center;
+      }
+      .flashcard-back {
+        transform: rotateY(180deg);
+        background: var(--accent2);
+        color: #000;
+      }
+      .flashcard-category {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        text-align: right;
+        background-color: rgba(0, 0, 0, 0.2);
+        padding: 3px 8px;
+        border-radius: 4px;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  // --- Add styles for action buttons ---
+  if (!document.getElementById('flashcard-action-style')) {
+    const style = document.createElement('style');
+    style.id = 'flashcard-action-style';
+    style.textContent = `
+      .flashcard-actions {
+        position: absolute;
+        top: 8px;
+        right: 12px;
+        z-index: 2;
+        display: flex;
+        gap: 6px;
+      }
+
+      .flashcard {
+        position: relative;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  // Show custom category input for MCQs
+  addMcqCustomCategoryBtn.addEventListener('click', function() {
+    mcqCustomCategoryInput.style.display = 'inline-block';
+    mcqCustomCategoryInput.focus();
+  });
+
+  // Add custom category to dropdown when user enters and presses Enter or leaves input
+  mcqCustomCategoryInput.addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      addMcqCustomCategory();
+    }
+  });
+  mcqCustomCategoryInput.addEventListener('blur', addMcqCustomCategory);
+
+  function addMcqCustomCategory() {
+    const value = mcqCustomCategoryInput.value.trim();
+    if (value) {
+      // Add to dropdown if not already present
+      let exists = false;
+      for (let i = 0; i < mcqModalCategory.options.length; i++) {
+        if (mcqModalCategory.options[i].value.toLowerCase() === value.toLowerCase()) {
+          exists = true;
+          break;
+        }
+      }
+      if (!exists) {
+        const option = document.createElement('option');
+        option.value = value;
+        option.textContent = value;
+        mcqModalCategory.appendChild(option);
+      }
+      mcqModalCategory.value = value;
+    }
+    mcqCustomCategoryInput.value = '';
+    mcqCustomCategoryInput.style.display = 'none';
+  }
+
+  // Live character count for MCQ question
+  mcqModalQuestion.addEventListener('input', function() {
+    mcqQuestionCharCount.textContent = mcqModalQuestion.value.length + '/100';
+  });
+
+  // --- MCQ logic ---
+  const mcqList = document.getElementById('mcqList');
+  const mcqCategoryBar = document.getElementById('mcqCategoryBar');
+  let mcqs = [];
+  let mcqCategories = ['All', 'Maths', 'Computer Science'];
+  let selectedMcqCategory = 'All';
+  let editingMcqIndex = null;
+
+  // Handle MCQ creation or edit
+  mcqForm.addEventListener('submit', function(event) {
+    event.preventDefault();
+    const question = mcqModalQuestion.value.trim();
+    const options = [
+      document.getElementById('mcqOption1').value.trim(),
+      document.getElementById('mcqOption2').value.trim(),
+      document.getElementById('mcqOption3').value.trim(),
+      document.getElementById('mcqOption4').value.trim()
+    ];
+    const correct = parseInt(document.getElementById('mcqCorrectOption').value);
+    let category = mcqModalCategory.value.trim();
+    if (!mcqCategories.includes(category)) {
+      mcqCategories.push(category);
+      addMcqCategoryToBar(category);
+    }
+    if (editingMcqIndex !== null) {
+      mcqs[editingMcqIndex] = { question, options, correct, category };
+      editingMcqIndex = null;
+    } else {
+      mcqs.push({ question, options, correct, category });
+    }
+    renderMcqs();
+    showPage('mcqsSection');
+    saveMcqs(); // [localStorage]
+  });
+
+  // Add new category button to bar
+  function addMcqCategoryToBar(category) {
+    if (category === 'All') return;
+    const btn = document.createElement('button');
+    btn.className = 'mcq-category-btn';
+    btn.dataset.category = category;
+    btn.textContent = category;
+    mcqCategoryBar.appendChild(btn);
+  }
+
+  // Category bar click (filter)
+  mcqCategoryBar.addEventListener('click', function(event) {
+    if (event.target.classList.contains('mcq-category-btn')) {
+      Array.from(mcqCategoryBar.children).forEach(btn => btn.classList.remove('selected'));
+      event.target.classList.add('selected');
+      selectedMcqCategory = event.target.dataset.category;
+      renderMcqs();
+    }
+  });
+
+  // Render MCQs
+  function renderMcqs() {
+    mcqList.innerHTML = '';
+    let filtered = mcqs;
+    if (selectedMcqCategory !== 'All') {
+      filtered = mcqs.filter(m => m.category === selectedMcqCategory);
+    }
+    filtered.forEach((mcq, idx) => {
+      const realIdx = mcqs.indexOf(mcq);
+      const card = document.createElement('div');
+      card.className = 'mcq-card';
+      card.innerHTML = `
+        <div class="mcq-actions">
+                  <button class="edit-mcq-btn" title="Edit" data-idx="${realIdx}">Edit</button>
+        <button class="delete-mcq-btn" title="Delete" data-idx="${realIdx}">Delete</button>
+        </div>
+        <div class="mcq-question">${escapeHTML(mcq.question)}</div>
+        <form class="mcq-options" data-idx="${realIdx}">
+          ${mcq.options.map((opt, i) => `
+            <div class="mcq-option">
+              <input type="checkbox" name="mcq${realIdx}" value="${i}" id="mcq${realIdx}_${i}">
+              <label for="mcq${realIdx}_${i}" class="mcq-option-text">${escapeHTML(opt)}</label>
+            </div>
+          `).join('')}
+          <button type="submit" class="mcq-submit-btn">Submit</button>
+        </form>
+        <div class="mcq-feedback" style="display:none;"></div>
+        <div class="mcq-category">${mcq.category}</div>
+      `;
+      mcqList.appendChild(card);
+    });
+    // Add event listeners for delete/edit
+    mcqList.querySelectorAll('.delete-mcq-btn').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const idx = parseInt(btn.dataset.idx);
+        mcqs.splice(idx, 1);
+        renderMcqs();
+        saveMcqs(); // [localStorage]
+      });
+    });
+    mcqList.querySelectorAll('.edit-mcq-btn').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const idx = parseInt(btn.dataset.idx);
+        const mcq = mcqs[idx];
+        // Pre-fill form
+        mcqModalQuestion.value = mcq.question;
+        document.getElementById('mcqOption1').value = mcq.options[0];
+        document.getElementById('mcqOption2').value = mcq.options[1];
+        document.getElementById('mcqOption3').value = mcq.options[2];
+        document.getElementById('mcqOption4').value = mcq.options[3];
+        mcqModalCategory.value = mcq.category;
+        document.getElementById('mcqCorrectOption').value = mcq.correct;
+        mcqQuestionCharCount.textContent = mcq.question.length + '/100';
+        editingMcqIndex = idx;
+        showPage('addMcqPage');
+        mcqCustomCategoryInput.style.display = 'none';
+      });
+    });
+    // Add event listeners for answer submission
+    mcqList.querySelectorAll('.mcq-options').forEach(form => {
+      // Single-select checkbox logic
+      form.querySelectorAll('input[type="checkbox"]').forEach((cb, i, allCbs) => {
+        cb.addEventListener('change', function() {
+          if (cb.checked) {
+            allCbs.forEach(other => { if (other !== cb) other.checked = false; });
+          }
+        });
+      });
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const idx = parseInt(form.dataset.idx);
+        const mcq = mcqs[idx];
+        const selected = Array.from(form.querySelectorAll('input[type="checkbox"]:checked'));
+        const feedback = form.parentElement.querySelector('.mcq-feedback');
+        feedback.style.display = 'block';
+        feedback.innerHTML = '';
+        // Remove previous highlights
+        form.querySelectorAll('.mcq-option').forEach(lab => {
+          lab.classList.remove('mcq-correct','mcq-wrong');
+        });
+        if (selected.length === 0) {
+          feedback.innerHTML = '<span style="color:var(--error)">Please select an option.</span>';
+          return;
+        }
+        // For now, treat only the correct index as correct (single answer MCQ)
+        const selectedIdxs = selected.map(cb => parseInt(cb.value));
+        if (selectedIdxs.length === 1 && selectedIdxs[0] === mcq.correct) {
+          // Correct
+          form.querySelectorAll('.mcq-option')[selectedIdxs[0]].classList.add('mcq-correct');
+          feedback.innerHTML = '<span style="color:var(--accent1);font-weight:bold;">✔️ Correct!</span>';
+        } else {
+          // Wrong
+          selectedIdxs.forEach(i => {
+            form.querySelectorAll('.mcq-option')[i].classList.add('mcq-wrong');
+          });
+          feedback.innerHTML = '<span style="color:var(--error);font-weight:bold;">❌ Wrong!</span> <button class="see-correct-btn" type="button">See Correct Answer</button>';
+          // See correct answer button
+          feedback.querySelector('.see-correct-btn').addEventListener('click', function() {
+            form.querySelectorAll('.mcq-option')[mcq.correct].classList.add('mcq-correct');
+            feedback.innerHTML += `<div style='margin-top:6px;color:var(--accent2);font-weight:bold;'>Correct Answer: ${escapeHTML(mcq.options[mcq.correct])}</div>`;
+          });
+        }
+        // Disable all checkboxes after submit
+        form.querySelectorAll('input[type="checkbox"]').forEach(r => r.disabled = true);
+        form.querySelector('.mcq-submit-btn').disabled = true;
+      });
+    });
+  }
+
+  // Add initial categories to bar (if not present)
+  function ensureInitialMcqCategories() {
+    const present = Array.from(mcqCategoryBar.children).map(btn => btn.dataset.category);
+    ['All', 'Maths', 'Computer Science'].forEach(cat => {
+      if (!present.includes(cat)) addMcqCategoryToBar(cat);
+    });
+  }
+  ensureInitialMcqCategories();
+
+  // --- MCQ CSS for card and feedback (inject if not present) ---
+  if (!document.getElementById('mcq-style')) {
+    const style = document.createElement('style');
+    style.id = 'mcq-style';
+    style.textContent = `
+      .mcq-list {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        width: 70%;
+        margin: 0 auto; /* Center horizontally */
+      }
+      .mcq-card {
+        width: 100%;
+        background: var(--card);
+        border-radius: 12px;
+        box-shadow: 0 2px 8px var(--shadow-tint);
+        padding: 18px 18px 12px 18px;
+        margin-bottom: 8px;
+        position: relative;
+      }
+      .mcq-actions {
+        position: absolute;
+        top: 8px;
+        right: 12px;
+        z-index: 2;
+        display: flex;
+        gap: 6px;
+      }
+
+      .mcq-question {
+        font-size: 1.08rem;
+        font-weight: bold;
+        margin-bottom: 12px;
+        color: var(--accent2);
+      }
+      .mcq-options {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 10px;
+      }
+      .mcq-option-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--bg);
+        border-radius: 6px;
+        padding: 6px 10px;
+        transition: background 0.18s, color 0.18s;
+      }
+      .mcq-option-label.mcq-correct {
+        background: var(--accent1);
+        color: #000;
+      }
+      .mcq-option-label.mcq-wrong {
+        background: var(--error);
+        color: #fff;
+      }
+      .mcq-option-label.mcq-selected {
+        border: 2px solid var(--accent2);
+      }
+      .mcq-submit-btn {
+        margin-top: 8px;
+        background: var(--accent2);
+        color: #000;
+        border: none;
+        border-radius: 8px;
+        padding: 8px 0;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      .mcq-submit-btn:disabled {
+        background: var(--bg);
+        color: var(--text-secondary);
+        cursor: not-allowed;
+      }
+      .mcq-feedback {
+        margin-top: 8px;
+        font-size: 1.05rem;
+        min-height: 24px;
+      }
+      .mcq-category {
+        margin-top: 6px;
+        font-size: 0.95rem;
+        color: var(--text-secondary);
+        text-align: right;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  // --- localStorage keys ---
+  const FLASHCARDS_KEY = 'revisionFlashcards';
+  const MCQS_KEY = 'revisionMCQs';
+
+  // Load flashcards from localStorage on page load
+  if (localStorage.getItem(FLASHCARDS_KEY)) {
+    flashcards = JSON.parse(localStorage.getItem(FLASHCARDS_KEY));
+    renderFlashcards();
+  }
+  // Load MCQs from localStorage on page load
+  if (localStorage.getItem(MCQS_KEY)) {
+    mcqs = JSON.parse(localStorage.getItem(MCQS_KEY));
+    renderMcqs();
+  }
+
+  // Save flashcards to localStorage whenever changed
+  function saveFlashcards() {
+    localStorage.setItem(FLASHCARDS_KEY, JSON.stringify(flashcards)); // [localStorage]
+  }
+  // Save MCQs to localStorage whenever changed
+  function saveMcqs() {
+    localStorage.setItem(MCQS_KEY, JSON.stringify(mcqs)); // [localStorage]
+  }
+
+  // Update flashcard add/edit/delete to call saveFlashcards()
+  // Update MCQ add/edit/delete to call saveMcqs()
+}); 
+  </script>
+</body>
+</html>

@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Study Resource Vault</title>
+  <style>
+    /* Import Google Fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap');
+
+    /* CSS Variables */
+    :root {
+      --bg: #0A0A0A;                /* Background - True black, clean canvas */
+      --card: #1E1E2E;              /* Container Cards - Dark charcoal for contrast */
+      --accent1: #39FF14;           /* Primary Accent - Neon green */
+      --accent2: #00FFFF;           /* Secondary Accent - Cyan glow */
+      --accent3: #FF3CAC;           /* Tertiary Accent - Hot pink for CTA buttons */
+      --text-primary: #E0E0E0;      /* Text (Primary) - Almost white, readable */
+      --text-secondary: #A0A0A0;    /* Text (Secondary) - Muted gray */
+      --focus-glow: #00FFD1;        /* Focus Ring - For animated rings, hover glows */
+      --error: #FF5555;             /* Error / Alert - Sharp red for contrast */
+      --shadow-tint: rgba(0,255,200,0.15); /* Shadow Tint - Glowing neon shadow overlay */
+      --success: #28a745;           /* Success - Soft green */
+      --border: rgba(255,255,255,0.1);    /* Border - Light border */
+      --hover: rgba(0,255,209,0.05); /* Hover - Very subtle cyan */
+    }
+
+    /* Base Styles */
+    body {
+      font-family: 'Montserrat', 'Raleway', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      line-height: 1.6;
+      font-size: 15px;
+      letter-spacing: 0.3px;
+      background: var(--bg);
+      color: var(--text-primary);
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Container styling */
+    .container {
+      background: var(--card);
+      color: var(--text-primary);
+      box-shadow: 0 4px 20px var(--shadow-tint);
+      border-radius: 16px;
+      padding: 30px;
+      max-width: 1000px;
+      margin: 40px auto;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .container:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--card);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Buttons */
+    button, .accent-btn, .mode-btn {
+      background: var(--accent1);
+      color: black;
+      border: none;
+      border-radius: 30px;
+      padding: 12px 24px;
+      font-size: 14px;
+      font-weight: 600;
+      box-shadow: 0 4px 15px var(--shadow-tint);
+      transition: all 0.2s ease;
+      cursor: pointer;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+
+    button:hover, .accent-btn:hover, .mode-btn:hover {
+      background: var(--accent1);
+      transform: translateY(-2px) !important;
+      color: black;
+    }
+
+    button:active, .accent-btn:active, .mode-btn:active {
+      background: var(--accent1);
+      transform: translateY(1px);
+      box-shadow: 0 0 1px var(--shadow-tint);
+    }
+
+    /* Form Elements */
+    input, select, textarea {
+      background: var(--bg);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 14px;
+      transition: all 0.2s ease;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--accent2);
+      box-shadow: 0 0 0 2px var(--shadow-tint);
+    }
+
+    /* Headings */
+    h1, h2 {
+      color: var(--text-primary);
+      font-weight: 700;
+      margin-bottom: 20px;
+      letter-spacing: 1px;
+    }
+
+    h1 {
+      font-size: 42px;
+      margin-top: 0;
+      position: relative;
+      color: var(--accent2);
+      padding-bottom: 20px;
+      display: block;
+      text-align: center;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 30px;
+    }
+
+    h1:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 180px;
+      height: 4px;
+      background: var(--accent1);
+      border-radius: 4px;
+    }
+
+    h2 {
+      font-size: 26px;
+      position: relative;
+      color: var(--accent2);
+      margin-bottom: 25px;
+      font-weight: 600;
+      letter-spacing: 1.2px;
+    }
+
+    /* Error styles */
+    .error {
+      color: var(--error);
+      font-weight: 500;
+    }
+
+    /* Resource Page Specific Styles */
+    /* Resource card styling */
+    .resource-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px;
+      margin-bottom: 16px;
+      transition: all 0.25s ease;
+      box-shadow: 0 2px 8px var(--shadow-tint);
+      cursor: pointer;
+    }
+
+    .resource-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px var(--shadow-tint);
+      border-color: var(--accent2);
+      background: var(--card);
+    }
+
+    .resource-title {
+      color: var(--text-primary);
+      font-weight: 600;
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+
+    .resource-link {
+      color: var(--accent1);
+      text-decoration: none;
+      display: block;
+      margin-bottom: 8px;
+      word-break: break-all;
+      transition: all 0.2s ease;
+    }
+
+    .resource-link:hover {
+      color: var(--accent2);
+    }
+
+    .resource-category {
+      color: var(--text-secondary);
+      font-size: 0.9em;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    /* Resource form styling */
+    #resourceForm {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-bottom: 30px;
+      background: var(--bg);
+      padding: 20px;
+      border-radius: 12px;
+    }
+
+    #resourceForm input, #resourceForm select {
+      padding: 8px 12px;
+      max-height: 40px;
+      font-size: 14px;
+    }
+    
+    #resourceForm input[type="file"], #resourceForm select {
+      cursor: pointer;
+    }
+
+    #resourceForm button[type="submit"] {
+      background: var(--error);
+      color: white;
+      font-weight: 600;
+      padding: 12px 24px;
+      border-radius: 30px;
+      box-shadow: 0 4px 15px var(--shadow-tint);
+      font-size: 14px;
+      letter-spacing: 0.8px;
+      border: none;
+      text-transform: uppercase;
+    }
+
+    #resourceForm button[type="submit"]:hover {
+      background: var(--error);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px var(--shadow-tint);
+      color: white;
+    }
+    
+    /* Delete button hover styles */
+    .delete-btn:hover {
+      background: var(--error) !important;
+      transform: translateY(-2px) !important;
+      box-shadow: 0 6px 20px var(--shadow-tint) !important;
+    }
+
+    /* Resource filter buttons */
+    .resource-filter-btns {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .resource-filter-btns button {
+      flex: 1;
+      min-width: 120px;
+      padding: 10px 15px;
+      font-size: 13px;
+    }
+    
+    .resource-filter-btns button.selected {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px var(--shadow-tint);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .container {
+        padding: 20px;
+        margin: 20px 10px;
+      }
+      
+      h1 {
+        font-size: 32px;
+      }
+      
+      h2 {
+        font-size: 22px;
+      }
+      
+      .resource-filter-btns {
+        flex-direction: column;
+        gap: 8px;
+      }
+      
+      button, .accent-btn, .mode-btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Study Resource Vault</h1>
+    <form id="resourceForm">
+      <input type="text" id="title" placeholder="Resource Title" required>
+      <input type="url" id="link" placeholder="Resource Link (URL)">
+      <label for="pdfFile">Or upload a PDF:</label>
+      <input type="file" id="pdfFile" accept="application/pdf">
+      <select id="category" required>
+        <option value="">Select Category</option>
+        <option value="Notes">Notes</option>
+        <option value="Video">Video</option>
+        <option value="PDF">PDF</option>
+        <option value="Website">Website</option>
+        <option value="Other">Other</option>
+      </select>
+      <button type="submit" class="accent-btn">Add Resource</button>
+    </form>
+    <div class="resource-controls">
+      <div class="resource-filter-btns">
+        <button id="showAllBtn" class="accent-btn">Show All</button>
+        <button id="showNotesBtn" class="accent-btn">Show saved Notes</button>
+        <button id="showVideoBtn" class="accent-btn">Show saved Video</button>
+        <button id="showPdfBtn" class="accent-btn">Show saved PDF</button>
+        <button id="showWebsiteBtn" class="accent-btn">Show saved Website</button>
+        <button id="showOtherBtn" class="accent-btn">Show saved Other</button>
+      </div>
+    </div>
+    <div class="resource-list" id="resourceList">
+      <!-- Resources will be displayed here -->
+    </div>
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const STORAGE_KEY = 'studyResources';
+      const form = document.getElementById('resourceForm');
+      const resourceList = document.getElementById('resourceList');
+      const showAllBtn = document.getElementById('showAllBtn');
+      const showNotesBtn = document.getElementById('showNotesBtn');
+      const showVideoBtn = document.getElementById('showVideoBtn');
+      const showPdfBtn = document.getElementById('showPdfBtn');
+      const showWebsiteBtn = document.getElementById('showWebsiteBtn');
+      const showOtherBtn = document.getElementById('showOtherBtn');
+      let currentFilter = 'all'; // 'Notes', 'Video', 'PDF', 'Website', 'Other', 'all'
+
+      // Load resources from localStorage
+      let resources = [];
+      if (localStorage.getItem(STORAGE_KEY)) {
+        resources = JSON.parse(localStorage.getItem(STORAGE_KEY));
+      }
+
+      // Session-only map for PDF files
+      const sessionPdfFiles = {};
+      
+      // Render resources on page load
+      renderResources();
+      highlightActiveFilter();
+
+      // Show All button
+      showAllBtn.addEventListener('click', function() {
+        currentFilter = 'all';
+        renderResources();
+        highlightActiveFilter();
+      });
+
+      showNotesBtn.addEventListener('click', function() {
+        currentFilter = currentFilter === 'Notes' ? 'all' : 'Notes';
+        renderResources();
+        highlightActiveFilter();
+      });
+      showVideoBtn.addEventListener('click', function() {
+        currentFilter = currentFilter === 'Video' ? 'all' : 'Video';
+        renderResources();
+        highlightActiveFilter();
+      });
+      showPdfBtn.addEventListener('click', function() {
+        currentFilter = currentFilter === 'PDF' ? 'all' : 'PDF';
+        renderResources();
+        highlightActiveFilter();
+      });
+      showWebsiteBtn.addEventListener('click', function() {
+        currentFilter = currentFilter === 'Website' ? 'all' : 'Website';
+        renderResources();
+        highlightActiveFilter();
+      });
+      showOtherBtn.addEventListener('click', function() {
+        currentFilter = currentFilter === 'Other' ? 'all' : 'Other';
+        renderResources();
+        highlightActiveFilter();
+      });
+      
+      // Function to highlight the active filter button
+      function highlightActiveFilter() {
+        const allFilterBtns = [showAllBtn, showNotesBtn, showVideoBtn, showPdfBtn, showWebsiteBtn, showOtherBtn];
+        allFilterBtns.forEach(btn => {
+          btn.classList.remove('selected');
+        });
+        
+        if (currentFilter === 'all') {
+          showAllBtn.classList.add('selected');
+        } else {
+          const activeBtn = document.getElementById(`show${currentFilter}Btn`);
+          if (activeBtn) activeBtn.classList.add('selected');
+        }
+      }
+
+      // Form submission: save to array/localStorage, do NOT display immediately
+      form.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const title = document.getElementById('title').value.trim();
+        const link = document.getElementById('link').value.trim();
+        const category = document.getElementById('category').value;
+        const pdfInput = document.getElementById('pdfFile');
+        const pdfFile = pdfInput.files[0];
+
+        // Only allow either link or PDF, not both
+        if (!link && !pdfFile) {
+          alert('Please provide either a link or upload a PDF.');
+          return;
+        }
+        if (link && pdfFile) {
+          alert('Please provide only a link OR a PDF, not both.');
+          return;
+        }
+
+        let resource = { title, category };
+        if (link) {
+          resource.link = link;
+        } else if (pdfFile) {
+          resource.pdfFileName = pdfFile.name;
+          // Store the File object in session map
+          sessionPdfFiles[pdfFile.name] = pdfFile;
+        }
+        resources.push(resource);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(resources));
+        form.reset();
+        // Display immediately
+        renderResources();
+        highlightActiveFilter();
+      });
+
+      function renderResources() {
+        resourceList.innerHTML = '';
+        let filtered = resources;
+        if (currentFilter !== 'all') {
+          // Category filter
+          filtered = resources.filter(r => r.category === currentFilter);
+        }
+        if (filtered.length === 0) {
+          resourceList.innerHTML = '<div style="color:var(--text-secondary);margin:16px 0;">No resources found.</div>';
+          return;
+        }
+        filtered.forEach((res, idx) => {
+          const card = document.createElement('div');
+          card.className = 'resource-card';
+          
+          // Make the entire card clickable
+          card.addEventListener('click', function(e) {
+            // Don't trigger if clicking the delete button
+            if (e.target.classList.contains('delete-btn')) return;
+            
+            // Open link or file based on resource type
+            if (res.link) {
+              window.open(res.link, '_blank');
+            } else if (res.pdfFileName && sessionPdfFiles[res.pdfFileName]) {
+              const fileURL = URL.createObjectURL(sessionPdfFiles[res.pdfFileName]);
+              window.open(fileURL, '_blank');
+            }
+          });
+          
+          // Create header div to hold title and delete button
+          const headerDiv = document.createElement('div');
+          headerDiv.style.display = 'flex';
+          headerDiv.style.justifyContent = 'space-between';
+          headerDiv.style.alignItems = 'center';
+          headerDiv.style.marginBottom = '10px';
+          
+          const titleElem = document.createElement('div');
+          titleElem.className = 'resource-title';
+          titleElem.textContent = (idx+1) + '. ' + res.title;
+          headerDiv.appendChild(titleElem);
+          
+          // Create delete button
+          const deleteBtn = document.createElement('button');
+          deleteBtn.textContent = 'Delete';
+          deleteBtn.className = 'delete-btn';
+          deleteBtn.style.background = 'var(--error)';
+          deleteBtn.style.color = 'white';
+          deleteBtn.style.padding = '8px 16px';
+          deleteBtn.style.fontSize = '12px';
+          deleteBtn.style.borderRadius = '30px';
+          deleteBtn.style.fontWeight = '600';
+          deleteBtn.style.textTransform = 'uppercase';
+          deleteBtn.style.letterSpacing = '0.8px';
+          deleteBtn.style.boxShadow = '0 4px 15px var(--shadow-tint)';
+          
+          // Add event listener to delete button
+          deleteBtn.addEventListener('click', function() {
+            // Find the index of this resource in the main resources array
+            const resourceIndex = resources.findIndex(resource => 
+              resource.title === res.title && 
+              ((resource.link && resource.link === res.link) || 
+               (resource.pdfFileName && resource.pdfFileName === res.pdfFileName)));
+            
+            if (resourceIndex !== -1) {
+              // Remove from resources array
+              resources.splice(resourceIndex, 1);
+              // Update localStorage
+              localStorage.setItem(STORAGE_KEY, JSON.stringify(resources));
+              // Re-render the list
+              renderResources();
+            }
+          });
+          
+          headerDiv.appendChild(deleteBtn);
+          card.appendChild(headerDiv);
+          if (res.link) {
+            const linkElem = document.createElement('a');
+            linkElem.className = 'resource-link';
+            linkElem.href = res.link;
+            linkElem.textContent = res.link;
+            linkElem.target = '_blank';
+            card.appendChild(linkElem);
+          } else if (res.pdfFileName) {
+            const fileNameElem = document.createElement('div');
+            fileNameElem.className = 'resource-link';
+            fileNameElem.textContent = res.pdfFileName;
+            card.appendChild(fileNameElem);
+            
+            // Determine file type based on category or file extension
+            const isImage = res.category.toLowerCase() === 'images' || 
+                           res.category.toLowerCase() === 'image' ||
+                           /\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(res.pdfFileName);
+            const isPDF = res.category.toLowerCase() === 'pdf' ||
+                         /\.pdf$/i.test(res.pdfFileName);
+            
+            // If file is available in session, show appropriate View button
+            if (sessionPdfFiles[res.pdfFileName]) {
+              const viewBtn = document.createElement('button');
+              viewBtn.textContent = isImage ? 'View Image' : (isPDF ? 'View PDF' : 'View File');
+              viewBtn.type = 'button';
+              viewBtn.style.marginTop = '6px';
+              viewBtn.addEventListener('click', function() {
+                const fileURL = URL.createObjectURL(sessionPdfFiles[res.pdfFileName]);
+                window.open(fileURL, '_blank');
+              });
+              card.appendChild(viewBtn);
+            } else {
+              // Not available after refresh
+              const msg = document.createElement('div');
+              msg.style.color = 'var(--text-secondary)';
+              msg.style.fontSize = '0.97rem';
+              msg.style.marginTop = '6px';
+              msg.textContent = 'File not available after refresh.';
+              card.appendChild(msg);
+            }
+          }
+          const categoryElem = document.createElement('div');
+          categoryElem.className = 'resource-category';
+          categoryElem.textContent = 'Category: ' + res.category;
+          card.appendChild(categoryElem);
+          resourceList.appendChild(card);
+        });
+      }
+    });
+  </script>
+</body>
+</html>

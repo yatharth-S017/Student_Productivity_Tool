@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Productivity Analytics Dashboard</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Montserrat:wght@400;700&family=Fira+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+        }
+        
+        body {
+            font-family: 'Montserrat', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0A0A0A;
+            color: #E0E0E0;
+            min-height: 100vh;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Analytics Dashboard Overlay */
+        .analytics-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(20, 20, 40, 0.95) 100%);
+            backdrop-filter: blur(15px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        .analytics-dashboard {
+            background: rgba(30, 30, 46, 0.98);
+            backdrop-filter: blur(25px);
+            border-radius: 25px;
+            border: 2px solid #00FFFF;
+            box-shadow: 0 0 50px rgba(0, 255, 255, 0.4), 0 25px 80px rgba(0, 0, 0, 0.6);
+            padding: 3rem;
+            max-width: 95vw;
+            width: 1200px;
+            max-height: 90vh;
+            overflow-y: auto;
+            color: #E0E0E0;
+            position: relative;
+        }
+
+        .analytics-close {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .analytics-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .analytics-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid rgba(0, 255, 255, 0.3);
+        }
+
+        .analytics-header h2 {
+            font-family: 'Orbitron', 'Montserrat', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, #39FF14 30%, #00FFFF 70%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.08em;
+        }
+
+        .analytics-header p {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.1rem;
+            color: #A0A0A0;
+            letter-spacing: 0.04em;
+        }
+
+        .analytics-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* Analytics Cards */
+        .analytics-card {
+            background: linear-gradient(135deg, #23233a 60%, #1E1E2E 100%);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 2px solid rgba(0, 255, 255, 0.2);
+            box-shadow: 0 6px 24px rgba(0, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .analytics-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #39FF14, #00FFFF);
+            border-radius: 20px 20px 0 0;
+        }
+
+        .analytics-card:hover {
+            transform: translateY(-5px);
+            border-color: #00FFFF;
+            box-shadow: 0 12px 40px rgba(0, 255, 255, 0.2);
+        }
+
+        /* NEW: Productivity Overview Card with Mini-Cards */
+        .productivity-overview-card {
+            background: linear-gradient(135deg, #23233a 60%, #1E1E2E 100%);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 2px solid rgba(0, 255, 255, 0.2);
+            box-shadow: 0 6px 24px rgba(0, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            grid-column: 1 / -1; /* Span full width */
+        }
+
+        .productivity-overview-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #39FF14, #00FFFF);
+            border-radius: 20px 20px 0 0;
+        }
+
+        .productivity-overview-card:hover {
+            transform: translateY(-5px);
+            border-color: #00FFFF;
+            box-shadow: 0 12px 40px rgba(0, 255, 255, 0.2);
+        }
+
+        .productivity-overview-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .productivity-overview-header h3 {
+            font-family: 'Orbitron', 'Montserrat', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #00FFFF;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.06em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+        }
+
+        .productivity-overview-header p {
+            font-family: 'Montserrat', sans-serif;
+            color: #A0A0A0;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        .productivity-mini-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .productivity-mini-card {
+            background: rgba(0, 255, 255, 0.05);
+            border: 1px solid rgba(0, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 1.2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .productivity-mini-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #39FF14, #00FFFF);
+            border-radius: 12px 12px 0 0;
+        }
+
+        .productivity-mini-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(0, 255, 255, 0.3);
+            box-shadow: 0 8px 25px rgba(0, 255, 255, 0.15);
+        }
+
+        /* NEW: Smooth animations for mini-cards */
+        .productivity-mini-card {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        .productivity-mini-card:nth-child(1) { animation-delay: 0.1s; }
+        .productivity-mini-card:nth-child(2) { animation-delay: 0.2s; }
+        .productivity-mini-card:nth-child(3) { animation-delay: 0.3s; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .mini-card-icon {
+            font-size: 2rem;
+            margin-bottom: 0.8rem;
+            display: block;
+            filter: drop-shadow(0 0 8px rgba(0, 255, 255, 0.4));
+        }
+
+        .mini-card-title {
+            font-family: 'Orbitron', 'Montserrat', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #00FFFF;
+            margin-bottom: 0.8rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .mini-card-progress {
+            font-family: 'Fira Mono', 'Consolas', monospace;
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, #39FF14, #00FFFF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.8rem;
+            text-shadow: 0 0 12px rgba(57, 255, 20, 0.5);
+        }
+
+        .mini-card-ratio {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            color: #A0A0A0;
+            line-height: 1.3;
+        }
+
+        .mini-card-ratio .completed {
+            color: #39FF14;
+            font-weight: 600;
+        }
+
+        .mini-card-ratio .total {
+            color: #00FFFF;
+            font-weight: 600;
+        }
+
+        /* Responsive adjustments for mini-cards */
+        @media (max-width: 768px) {
+            .productivity-mini-cards {
+                grid-template-columns: 1fr;
+                gap: 0.8rem;
+            }
+            
+            .productivity-mini-card {
+                padding: 1rem;
+            }
+            
+            .mini-card-progress {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Additional responsive adjustments for very small screens */
+        @media (max-width: 480px) {
+            .productivity-overview-card {
+                padding: 1rem;
+            }
+            
+            .productivity-overview-header h3 {
+                font-size: 1.2rem;
+            }
+            
+            .productivity-overview-header p {
+                font-size: 0.9rem;
+            }
+            
+            .mini-card-icon {
+                font-size: 1.5rem;
+            }
+            
+            .mini-card-title {
+                font-size: 0.9rem;
+            }
+            
+            .mini-card-progress {
+                font-size: 1.3rem;
+            }
+            
+            .mini-card-ratio {
+                font-size: 0.8rem;
+            }
+        }
+
+        .analytics-card h3 {
+            font-family: 'Orbitron', 'Montserrat', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #00FFFF;
+            margin-bottom: 0.8rem;
+            letter-spacing: 0.06em;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .analytics-card-icon {
+            font-size: 1.3rem;
+            filter: drop-shadow(0 0 6px rgba(0, 255, 255, 0.5));
+        }
+
+        .analytics-metric {
+            font-family: 'Fira Mono', 'Consolas', monospace;
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, #39FF14, #00FFFF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 0.8rem 0;
+            text-shadow: 0 0 16px rgba(57, 255, 20, 0.5);
+        }
+
+        .analytics-description {
+            font-family: 'Montserrat', sans-serif;
+            color: #A0A0A0;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            margin-bottom: 0.8rem;
+        }
+
+        .analytics-progress-container {
+            margin: 1rem 0;
+        }
+
+        .analytics-progress-bar {
+            width: 100%;
+            height: 12px;
+            background: rgba(0, 255, 255, 0.1);
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .analytics-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #39FF14, #00FFFF);
+            border-radius: 6px;
+            width: 0%;
+            transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 15px rgba(57, 255, 20, 0.6);
+        }
+
+        .analytics-stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.8rem;
+            margin-top: 0.8rem;
+        }
+
+        .analytics-stat {
+            background: rgba(0, 255, 255, 0.05);
+            border: 1px solid rgba(0, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .analytics-stat-value {
+            font-family: 'Fira Mono', 'Consolas', monospace;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #39FF14;
+            margin-bottom: 0.3rem;
+        }
+
+        .analytics-stat-label {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            color: #A0A0A0;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Responsive Design for Analytics */
+        @media (max-width: 768px) {
+            .analytics-dashboard {
+                padding: 2rem 1.5rem;
+                margin: 1rem;
+            }
+
+            .analytics-header h2 {
+                font-size: 2rem;
+            }
+
+            .analytics-content {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .analytics-card {
+                padding: 1.5rem;
+            }
+
+            .analytics-metric {
+                font-size: 2rem;
+            }
+
+            .analytics-stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+  <!-- Analytics Dashboard Overlay -->
+  <div class="analytics-overlay" id="analyticsOverlay">
+    <div class="analytics-dashboard" id="analyticsDashboard">
+      <button class="analytics-close" onclick="closeAnalyticsDashboard()">&times;</button>
+      <div class="analytics-header">
+        <h2>Productivity Analytics Dashboard</h2>
+        <p>Comprehensive insights into your goal progress and consistency</p>
+      </div>
+      <div class="analytics-content" id="analyticsContent">
+        <!-- Content will be dynamically generated -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+        // Initialize GSAP
+        gsap.registerPlugin();
+
+        // Global variables
+        let goals = [];
+
+        // Load goals from localStorage on page load
+        function loadGoals() {
+            const savedGoals = localStorage.getItem('goals');
+            if (savedGoals) {
+                goals = JSON.parse(savedGoals);
+            }
+        }
+
+        // Analytics Dashboard Functions
+        function openAnalyticsDashboard() {
+            const overlay = document.getElementById('analyticsOverlay');
+            const dashboard = document.getElementById('analyticsDashboard');
+            
+            overlay.style.display = 'flex';
+            generateAnalyticsContent();
+            
+            gsap.fromTo(dashboard, {
+                scale: 0.7,
+                opacity: 0,
+                y: 50
+            }, {
+                scale: 1,
+                opacity: 1,
+                y: 0,
+                duration: 0.5,
+                ease: "back.out(1.7)"
+            });
+        }
+
+        function closeAnalyticsDashboard() {
+            const overlay = document.getElementById('analyticsOverlay');
+            const dashboard = document.getElementById('analyticsDashboard');
+            
+            gsap.to(dashboard, {
+                scale: 0.7,
+                opacity: 0,
+                y: 50,
+                duration: 0.3,
+                ease: "back.in(1.7)",
+                onComplete: () => {
+                    overlay.style.display = 'none';
+                }
+            });
+        }
+
+        function generateAnalyticsContent() {
+            const content = document.getElementById('analyticsContent');
+            
+            if (goals.length === 0) {
+                content.innerHTML = `
+                    <div class="analytics-card" style="grid-column: 1 / -1; text-align: center;">
+                        <h3><span class="analytics-card-icon">📊</span>No Data Available</h3>
+                        <div class="analytics-metric">0%</div>
+                        <div class="analytics-description">
+                            Start by adding your first goal to see comprehensive analytics and insights about your productivity journey.
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            // Calculate comprehensive analytics including daily, weekly, and monthly metrics
+            const analytics = calculateComprehensiveAnalytics();
+            
+            content.innerHTML = `
+                <!-- NEW: Productivity Overview Card with Three Mini-Cards -->
+                <div class="productivity-overview-card">
+                    <div class="productivity-overview-header">
+                        <h3><span class="analytics-card-icon">🎯</span>Productivity Overview</h3>
+                        <p>Your productivity performance across different time frames</p>
+                    </div>
+                    <div class="productivity-mini-cards">
+                        <!-- Daily Productivity Mini-Card -->
+                        <div class="productivity-mini-card">
+                            <span class="mini-card-icon">📅</span>
+                            <div class="mini-card-title">Daily</div>
+                            <div class="mini-card-progress">${analytics.dailyProgress}%</div>
+                            <div class="mini-card-ratio">
+                                <span class="completed">${analytics.dailyCompleted}</span> of <span class="total">${analytics.dailyTotal}</span> goals
+                            </div>
+                        </div>
+                        
+                        <!-- Weekly Productivity Mini-Card -->
+                        <div class="productivity-mini-card">
+                            <span class="mini-card-icon">📊</span>
+                            <div class="mini-card-title">Weekly</div>
+                            <div class="mini-card-progress">${analytics.weeklyProgress}%</div>
+                            <div class="mini-card-ratio">
+                                <span class="completed">${analytics.weeklyCompleted}</span> of <span class="total">${analytics.weeklyTotal}</span> days
+                            </div>
+                        </div>
+                        
+                        <!-- Monthly Productivity Mini-Card -->
+                        <div class="productivity-mini-card">
+                            <span class="mini-card-icon">📈</span>
+                            <div class="mini-card-title">Monthly</div>
+                            <div class="mini-card-progress">${analytics.monthlyProgress}%</div>
+                            <div class="mini-card-ratio">
+                                <span class="completed">${analytics.monthlyCompleted}</span> of <span class="total">${analytics.monthlyTotal}</span> days
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Goal Completion Rate -->
+                <div class="analytics-card">
+                    <h3><span class="analytics-card-icon">✅</span>Goal Completion</h3>
+                    <div class="analytics-metric">${analytics.completionRate}%</div>
+                    <div class="analytics-description">
+                        Percentage of goals that have been completed or are on track to meet their deadlines.
+                    </div>
+                    <div class="analytics-stats-grid">
+                        <div class="analytics-stat">
+                            <div class="analytics-stat-value">${analytics.completedGoals}</div>
+                            <div class="analytics-stat-label">Completed</div>
+                        </div>
+                        <div class="analytics-stat">
+                            <div class="analytics-stat-value">${analytics.totalGoals}</div>
+                            <div class="analytics-stat-label">Total Goals</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Time Management -->
+                <div class="analytics-card">
+                    <h3><span class="analytics-card-icon">⏰</span>Time Management</h3>
+                    <div class="analytics-metric">${analytics.timeEfficiency}%</div>
+                    <div class="analytics-description">
+                        Efficiency in managing time across your goals, considering deadlines and progress.
+                    </div>
+                    <div class="analytics-stats-grid">
+                        <div class="analytics-stat">
+                            <div class="analytics-stat-value">${analytics.onTrackGoals}</div>
+                            <div class="analytics-stat-label">On Track</div>
+                        </div>
+                        <div class="analytics-stat">
+                            <div class="analytics-stat-value">${analytics.behindGoals}</div>
+                            <div class="analytics-stat-label">Behind</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Goal Type Performance -->
+                <div class="analytics-card">
+                    <h3><span class="analytics-card-icon">🎓</span>Category Performance</h3>
+                    <div class="analytics-description">
+                        Performance breakdown by goal categories (Academic, Career, Fitness, etc.).
+                    </div>
+                    <div class="analytics-stats-grid">
+                        ${generateCategoryPerformanceStats(analytics.categoryPerformance)}
+                    </div>
+                </div>
+                
+            `;
+
+            // Animate progress bars after content is loaded
+            setTimeout(() => {
+                animateProgressBars();
+            }, 100);
+        }
+
+        function calculateComprehensiveAnalytics() {
+            const analytics = {
+                overallScore: 0,
+                completionRate: 0,
+                consistencyScore: 0,
+                timeEfficiency: 0,
+                totalGoals: goals.length,
+                completedGoals: 0,
+                onTrackGoals: 0,
+                behindGoals: 0,
+                totalProgressDays: 0,
+                importantGoals: 0,
+                streakDays: 0,
+
+                // NEW: Daily, Weekly, and Monthly productivity metrics
+                dailyProgress: 0,
+                dailyCompleted: 0,
+                dailyTotal: 0,
+                weeklyProgress: 0,
+                weeklyCompleted: 0,
+                weeklyTotal: 0,
+                monthlyProgress: 0,
+                monthlyCompleted: 0,
+                monthlyTotal: 0,
+
+                categoryPerformance: {}
+            };
+
+            if (goals.length === 0) return analytics;
+
+            // Calculate basic metrics
+            let totalProgress = 0;
+            let totalDaysWorked = 0;
+            const importantGoals = getImportantGoals();
+
+            goals.forEach(goal => {
+                if (!goal.progressDays) goal.progressDays = [];
+                const { percent, doneDays, totalDays } = getGoalProgress(goal);
+                totalProgress += percent;
+                totalDaysWorked += doneDays;
+
+                // Completion tracking
+                if (percent >= 100) analytics.completedGoals++;
+                else if (percent >= 75) analytics.onTrackGoals++;
+                else if (percent < 50) analytics.behindGoals++;
+
+                // Category performance
+                if (!analytics.categoryPerformance[goal.type]) {
+                    analytics.categoryPerformance[goal.type] = {
+                        count: 0,
+                        totalProgress: 0,
+                        avgProgress: 0
+                    };
+                }
+                analytics.categoryPerformance[goal.type].count++;
+                analytics.categoryPerformance[goal.type].totalProgress += percent;
+            });
+
+            // Calculate averages and percentages
+            analytics.overallScore = Math.round(totalProgress / goals.length);
+            analytics.completionRate = Math.round((analytics.completedGoals / goals.length) * 100);
+            analytics.importantGoals = importantGoals.length;
+
+            // Consistency score based on progress days vs total possible days
+            const totalPossibleDays = goals.reduce((sum, goal) => {
+                return sum + getGoalTotalDays(goal);
+            }, 0);
+            analytics.consistencyScore = totalPossibleDays > 0 ? Math.round((totalDaysWorked / totalPossibleDays) * 100) : 0;
+
+            // Time efficiency (on track goals vs behind goals)
+            const totalActiveGoals = analytics.onTrackGoals + analytics.behindGoals;
+            analytics.timeEfficiency = totalActiveGoals > 0 ? Math.round((analytics.onTrackGoals / totalActiveGoals) * 100) : 0;
+
+            // Category performance averages
+            Object.keys(analytics.categoryPerformance).forEach(category => {
+                const cat = analytics.categoryPerformance[category];
+                cat.avgProgress = Math.round(cat.totalProgress / cat.count);
+            });
+
+            // Calculate current streak
+            analytics.streakDays = calculateCurrentStreak();
+
+            // ✅ Updated Daily / Weekly / Monthly productivity metrics
+            const today = new Date();
+            const todayKey = today.toISOString().slice(0, 10);
+
+            // --- DAILY ---
+            analytics.dailyTotal = goals.filter(goal => {
+                const start = new Date(goal.startDate);
+                const end = new Date(goal.endDate);
+                return today >= start && today <= end;
+            }).length;
+            analytics.dailyCompleted = goals.filter(goal => goal.progressDays.includes(todayKey)).length;
+            analytics.dailyProgress = analytics.dailyTotal > 0 ? Math.round((analytics.dailyCompleted / analytics.dailyTotal) * 100) : 0;
+
+            // --- WEEKLY (current calendar week, Sun–Sat) ---
+            const weekStart = new Date(today);
+            weekStart.setDate(today.getDate() - weekStart.getDay()); 
+            const weekEnd = new Date(weekStart);
+            weekEnd.setDate(weekStart.getDate() + 6);
+
+            analytics.weeklyTotal = 0;
+            analytics.weeklyCompleted = 0;
+
+            goals.forEach(goal => {
+                const start = new Date(goal.startDate);
+                const end = new Date(goal.endDate);
+
+                for (let d = new Date(weekStart); d <= weekEnd; d.setDate(d.getDate() + 1)) {
+                    if (d >= start && d <= end) {
+                        analytics.weeklyTotal++;
+                        const dKey = d.toISOString().slice(0, 10);
+                        if (goal.progressDays.includes(dKey)) {
+                            analytics.weeklyCompleted++;
+                        }
+                    }
+                }
+            });
+
+            analytics.weeklyProgress = analytics.weeklyTotal > 0 ? Math.round((analytics.weeklyCompleted / analytics.weeklyTotal) * 100) : 0;
+
+            // --- MONTHLY (current calendar month) ---
+            const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+            const monthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+
+            analytics.monthlyTotal = 0;
+            analytics.monthlyCompleted = 0;
+
+            goals.forEach(goal => {
+                const start = new Date(goal.startDate);
+                const end = new Date(goal.endDate);
+
+                for (let d = new Date(monthStart); d <= monthEnd; d.setDate(d.getDate() + 1)) {
+                    if (d >= start && d <= end) {
+                        analytics.monthlyTotal++;
+                        const dKey = d.toISOString().slice(0, 10);
+                        if (goal.progressDays.includes(dKey)) {
+                            analytics.monthlyCompleted++;
+                        }
+                    }
+                }
+            });
+
+            analytics.monthlyProgress = analytics.monthlyTotal > 0 ? Math.round((analytics.monthlyCompleted / analytics.monthlyTotal) * 100) : 0;
+
+            return analytics;
+        }
+
+        function generateCategoryPerformanceStats(categoryPerformance) {
+            return Object.entries(categoryPerformance).map(([category, data]) => `
+                <div class="analytics-stat">
+                    <div class="analytics-stat-value">${data.avgProgress}%</div>
+                    <div class="analytics-stat-label">${category}</div>
+                </div>
+            `).join('');
+        }
+
+        function getGoalProgress(goal) {
+            if (!goal.progressDays) goal.progressDays = [];
+            const totalDays = getGoalTotalDays(goal);
+            const doneDays = goal.progressDays.length;
+            return { percent: Math.round((doneDays/totalDays)*100), doneDays, totalDays };
+        }
+
+        function getGoalTotalDays(goal) {
+            const start = new Date(goal.startDate);
+            const end = new Date(goal.endDate);
+            return Math.floor((end-start)/(1000*60*60*24))+1;
+        }
+
+        function calculateCurrentStreak() {
+            const today = new Date();
+            let streak = 0;
+            
+            for (let i = 0; i < 30; i++) { // Check last 30 days
+                const date = new Date(today);
+                date.setDate(today.getDate() - i);
+                const dateKey = date.toISOString().slice(0, 10);
+                
+                let hasProgress = false;
+                goals.forEach(goal => {
+                    if (goal.progressDays && goal.progressDays.includes(dateKey)) {
+                        hasProgress = true;
+                    }
+                });
+                
+                if (hasProgress) {
+                    streak++;
+                } else {
+                    break;
+                }
+            }
+            
+            return streak;
+        }
+
+        function getImportantGoals() {
+            const stored = localStorage.getItem('importantGoals');
+            return stored ? JSON.parse(stored) : [];
+        }
+
+        function animateProgressBars() {
+            const progressBars = document.querySelectorAll('.analytics-progress-fill');
+            progressBars.forEach(bar => {
+                const targetWidth = bar.style.width;
+                bar.style.width = '0%';
+                setTimeout(() => {
+                    bar.style.width = targetWidth;
+                }, 100);
+            });
+        }
+
+        // Close analytics dashboard when clicking outside
+        document.getElementById('analyticsOverlay').addEventListener('click', (e) => {
+            if (e.target.id === 'analyticsOverlay') {
+                closeAnalyticsDashboard();
+            }
+        });
+
+        // Initialize page
+        loadGoals();
+        openAnalyticsDashboard(); // Automatically open dashboard when page loads
+</script>
+
+
+</body>
+</html>

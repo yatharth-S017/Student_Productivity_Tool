@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>StudyBuddy Pomodoro Timer</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* =====================
+           Variables & Base
+        ====================== */
+        :root {
+            --bg-color: #0A0A0A;
+            --card-bg: #1E1E2E;
+            --neon-green: #39FF14;
+            --cyan: #00FFFF;
+            --hot-pink: #FF3CAC;
+            --text-primary: #E0E0E0;
+            --text-secondary: #A0A0A0;
+            --spacing: 20px;
+            --radius: 10px;
+            --timer-size: 180px;
+            --timer-font-size: 3.5rem;
+            --timer-font-size-lg: 4.5rem;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+            padding: var(--spacing);
+        }
+
+        /* =====================
+           Timer Card & Layout
+        ====================== */
+        .timer-wrapper {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .timer-container {
+            text-align: center;
+            padding: var(--spacing);
+            width: 90vw;
+            max-width: 420px;
+            border: 2px solid var(--cyan);
+            border-radius: var(--radius);
+            background-color: var(--card-bg);
+            color: var(--text-primary);
+            position: relative;
+        }
+
+        .timer-container h1 {
+            color: var(--neon-green);
+            font-size: 2rem;
+        }
+
+        .timer-container h2 {
+            color: var(--cyan);
+            font-size: 1.25rem;
+        }
+
+        /* =====================
+           Timer & Progress Ring
+        ====================== */
+        .timer-progress {
+            position: relative;
+            width: var(--timer-size);
+            height: var(--timer-size);
+            margin: 0 auto var(--spacing) auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #timer {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: var(--timer-font-size);
+            color: var(--hot-pink);
+            z-index: 2;
+        }
+        .progress-ring {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            transform: rotate(-90deg); /* Start from top */
+        }
+        .progress-ring__circle {
+            stroke: var(--neon-green);
+            stroke-width: 6;
+            fill: transparent;
+            transition: stroke-dashoffset 0.5s linear;
+            stroke-linecap: round;
+        }
+
+
+
+        /* =====================
+           Buttons
+        ====================== */
+        .buttons button {
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin: 5px;
+            padding: 10px 20px;
+            border: none;
+            transition: all 0.2s;
+        }
+        #start {
+            background-color: var(--neon-green);
+            color: var(--bg-color);
+        }
+        #pause,
+        #reset {
+            background-color: var(--cyan);
+            color: var(--bg-color);
+            opacity: 0.7;
+        }
+        .buttons button:hover:enabled,
+        .buttons button:focus:enabled {
+            transform: scale(1.05);
+            opacity: 1;
+            outline: 2px solid var(--neon-green);
+        }
+        .buttons button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        /* =====================
+           Back Button
+        ====================== */
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 40px;
+            height: 40px;
+            background-color: var(--neon-green);
+            color: var(--bg-color);
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            z-index: 1000;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .back-btn:hover,
+        .back-btn:focus {
+            transform: scale(1.1);
+            outline: 2px solid var(--neon-green);
+        }
+        .back-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* =====================
+           Responsive
+        ====================== */
+        @media (orientation: landscape) {
+            .timer-container {
+                width: 60vw;
+                max-width: 600px;
+            }
+            .timer-progress {
+                width: 240px;
+                height: 240px;
+            }
+            #timer {
+                font-size: var(--timer-font-size-lg);
+            }
+        }
+
+        /* Mobile Design Optimizations */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+                min-height: 100vh;
+                justify-content: flex-start;
+                padding-top: 60px;
+            }
+
+            .timer-container {
+                width: 95vw;
+                max-width: 350px;
+                padding: 15px;
+                margin-top: 20px;
+            }
+
+            .timer-container h1 {
+                font-size: 1.5rem;
+                margin-bottom: 10px;
+            }
+
+            .timer-container h2 {
+                font-size: 1rem;
+                margin-bottom: 15px;
+            }
+
+            .timer-progress {
+                width: 140px;
+                height: 140px;
+                margin: 0 auto 15px auto;
+            }
+
+            #timer {
+                font-size: 2.5rem;
+            }
+
+            .buttons {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 8px;
+            }
+
+            .buttons button {
+                padding: 12px 16px;
+                font-size: 0.9rem;
+                margin: 2px;
+                min-width: 80px;
+            }
+
+            .back-btn {
+                width: 35px;
+                height: 35px;
+                font-size: 1.2em;
+                top: 15px;
+                left: 15px;
+            }
+
+            #studybuddy-section {
+                margin-top: 80px;
+            }
+
+            #studybuddy-title {
+                font-size: 1.8em;
+                padding: 8px 16px;
+            }
+
+            /* Adjust modal for mobile */
+            .modal-dialog {
+                margin: 10px;
+            }
+
+            .modal-content {
+                padding: 10px;
+            }
+
+            .modal-body {
+                padding: 15px;
+            }
+
+            .modal-body input {
+                font-size: 16px; /* Prevents zoom on iOS */
+                padding: 12px;
+            }
+
+            .modal-footer {
+                padding: 10px;
+            }
+
+            .modal-footer button {
+                width: 100%;
+                padding: 12px;
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 5px;
+                padding-top: 50px;
+            }
+
+            .timer-container {
+                width: 98vw;
+                max-width: 320px;
+                padding: 12px;
+            }
+
+            .timer-container h1 {
+                font-size: 1.3rem;
+            }
+
+            .timer-container h2 {
+                font-size: 0.9rem;
+            }
+
+            .timer-progress {
+                width: 120px;
+                height: 120px;
+            }
+
+            #timer {
+                font-size: 2rem;
+            }
+
+            .buttons button {
+                padding: 10px 12px;
+                font-size: 0.8rem;
+                min-width: 70px;
+            }
+
+            .back-btn {
+                width: 30px;
+                height: 30px;
+                font-size: 1em;
+                top: 10px;
+                left: 10px;
+            }
+
+        }
+
+        @media (max-width: 360px) {
+            .timer-container {
+                width: 100vw;
+                max-width: 300px;
+                padding: 10px;
+            }
+
+            .timer-progress {
+                width: 100px;
+                height: 100px;
+            }
+
+            #timer {
+                font-size: 1.8rem;
+            }
+
+            .buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .buttons button {
+                width: 120px;
+                margin: 3px 0;
+            }
+        }
+
+        /* Ensure proper touch targets */
+        @media (max-width: 768px) {
+            .buttons button,
+            .back-btn,
+            .modal-footer button {
+                min-height: 44px; /* iOS recommended touch target */
+            }
+        }
+
+        /* Prevent horizontal scroll on mobile */
+        @media (max-width: 768px) {
+            body {
+                overflow-x: hidden;
+                width: 100%;
+            }
+            
+            .timer-container {
+                overflow: hidden;
+            }
+        }
+
+        /* =====================
+           Side Quotes
+        ====================== */
+        .side-quote {
+            position: fixed;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            max-width: 250px;
+            padding: 20px;
+            background: rgba(30, 30, 46, 0.9);
+            border: 2px solid var(--cyan);
+            border-radius: var(--radius);
+            color: var(--text-primary);
+            font-style: italic;
+            font-size: 1.1rem;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: 100;
+        }
+        .side-quote.show {
+            opacity: 1;
+        }
+
+        /* =====================
+           Side Animations
+        ====================== */
+        .floating-element {
+            position: fixed;
+            pointer-events: none;
+            z-index: 50;
+            opacity: 0.4;
+            font-size: 1.5rem;
+        }
+        .floating-element:nth-child(1) { color: var(--neon-green); }
+        .floating-element:nth-child(2) { color: var(--cyan); }
+        .floating-element:nth-child(3) { color: var(--hot-pink); }
+        .floating-element:nth-child(4) { color: var(--glow); }
+
+        .particle {
+            position: fixed;
+            width: 3px;
+            height: 3px;
+            background: var(--neon-green);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 40;
+            opacity: 0.6;
+        }
+
+
+
+        @media (max-width: 1200px) {
+            .side-quote,
+            .floating-element,
+            .particle,
+            .study-particle {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <a href="index.html" class="back-btn" title="Go Back" aria-label="Go Back">&#8592;</a>
+    </header>
+    <main>
+        <!-- Settings Modal -->
+        <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content" style="background-color: #1E1E2E; color: #E0E0E0; border: 2px solid #00FFFF;">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="settingsModalLabel">Timer Settings</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <label for="work-input" class="form-label">Work Duration (minutes)</label>
+                        <input type="number" class="form-control" id="work-input" min="1" value="25">
+                        <label for="break-input" class="form-label mt-2">Break Duration (minutes)</label>
+                        <input type="number" class="form-control" id="break-input" min="1" value="5">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="modalStartBtn" class="btn" style="background-color:#39FF14; color:#0A0A0A;">Start</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Timer Card -->
+        <section class="timer-wrapper" aria-label="Pomodoro Timer">
+            <div class="timer-container actual-container">
+                <h1>Pomodoro Timer</h1>
+                <h2 id="mode-label">Work Time</h2>
+                <div class="timer-progress">
+                    <svg class="progress-ring" width="100%" height="100%" viewBox="0 0 180 180">
+                        <circle class="progress-ring__circle" 
+                                cx="90" 
+                                cy="90" 
+                                r="80" 
+                                stroke="var(--neon-green)" 
+                                stroke-width="6" 
+                                fill="transparent"/>
+                    </svg>
+                    <div id="timer">25:00</div>
+                </div>
+                <div class="buttons">
+                    <button id="start">Start</button>
+                    <button id="pause" disabled>Pause</button>
+                    <button id="reset" disabled>Restart</button>
+                    <button id="adjust">Adjust Settings</button>
+                </div>
+                <!-- Beep Sound -->
+                <audio id="beep" preload="auto"></audio>
+            </div>
+        </section>
+
+        <!-- Side Quote -->
+        <div id="side-quote" class="side-quote" aria-live="polite"></div>
+
+        <!-- Right Side Animations -->
+        <div id="floating-elements-right">
+            <div class="floating-element" style="right: 50px; top: 20%;">📚</div>
+            <div class="floating-element" style="right: 80px; top: 35%;">⚡</div>
+            <div class="floating-element" style="right: 40px; top: 70%;">🎯</div>
+            <div class="floating-element" style="right: 90px; top: 85%;">💡</div>
+        </div>
+
+        <!-- Left Side Animations -->
+        <div id="floating-elements-left">
+            <div class="floating-element" style="left: 50px; top: 20%;">📚</div>
+            <div class="floating-element" style="left: 80px; top: 35%;">⚡</div>
+            <div class="floating-element" style="left: 40px; top: 70%;">🎯</div>
+            <div class="floating-element" style="left: 90px; top: 85%;">💡</div>
+        </div>
+
+        <div id="particles-container"></div>
+    </main>
+    <!-- GSAP and ScrollTrigger -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <!-- Bootstrap JS Bundle (includes Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Durations (in seconds)
+        let workDuration = 25 * 60;
+        let breakDuration = 5 * 60;
+        let currentMode = 'work';  // 'work' or 'break'
+        let timeLeft = workDuration;
+        let timerInterval = null;
+        // DOM elements
+        const startBtn = document.getElementById('start');
+        const pauseBtn = document.getElementById('pause');
+        const resetBtn = document.getElementById('reset');
+        const adjustBtn = document.getElementById('adjust');
+        const timerDisplay = document.getElementById('timer');
+        const modeLabel = document.getElementById('mode-label');
+        const beepSound = document.getElementById('beep');
+        const workInput = document.getElementById('work-input');
+        const breakInput = document.getElementById('break-input');
+        const modalStartBtn = document.getElementById('modalStartBtn');
+        const actualContainer = document.querySelector('.actual-container');
+        const progressCircle = document.querySelector('.progress-ring__circle');
+        const timerProgress = document.querySelector('.timer-progress');
+
+        // Create beep sound using Web Audio API
+        function createBeepSound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                oscillator.type = 'sine';
+                
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1.5);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 1.5);
+            } catch (error) {
+                console.log('Web Audio API failed:', error);
+                throw error;
+            }
+        }
+
+        // Play beep sound (fallback to audio element if Web Audio API fails)
+        function playBeep() {
+            try {
+                createBeepSound();
+            } catch (error) {
+                // Fallback: try to play the audio element
+                if (beepSound) {
+                    beepSound.currentTime = 0;
+                    beepSound.play().catch(e => console.log('Audio play failed:', e));
+                }
+            }
+        }
+
+        // Passive aggressive side quotes
+        const sideQuotes = [
+            "Oh look, someone's actually studying! *slow clap*",
+            "Breaking news: Procrastination is not a study method.",
+            "Your future self will thank you. Or haunt you. Your choice.",
+            "Coffee can't solve everything, but it's a good start.",
+            "Remember: Netflix will still be there after you're done. Probably."
+        ];
+
+        // Motivational quotes for break time
+        const breakQuotes = [
+            "Rest now, conquer later!",
+            "Breaks boost your brain!",
+            "You deserve this pause.",
+            "Breathe. Reset. Go again!",
+            "Great work! Recharge for more."
+        ];
+        let quoteElem = null;
+        let sideQuoteElem = null;
+        let quoteInterval = null;
+
+        // Progress ring setup
+        const RADIUS = 80;
+        const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
+        progressCircle.style.strokeDasharray = `${CIRCUMFERENCE}`;
+        progressCircle.style.strokeDashoffset = `${CIRCUMFERENCE}`;
+
+        // Helper: update the progress ring
+        function updateProgressRing() {
+            let total = (currentMode === 'work') ? workDuration : breakDuration;
+            let percent = (total - timeLeft) / total;
+            let offset = CIRCUMFERENCE * (1 - percent);
+            progressCircle.style.strokeDashoffset = offset;
+        }
+
+        // Helper: show a motivational quote during break
+        function showBreakQuote() {
+            if (!quoteElem) {
+                quoteElem = document.createElement('div');
+                quoteElem.setAttribute('id', 'break-quote');
+                quoteElem.setAttribute('aria-live', 'polite');
+                quoteElem.style.marginTop = '10px';
+                quoteElem.style.color = 'var(--cyan)';
+                quoteElem.style.fontSize = '1.1rem';
+                quoteElem.style.fontStyle = 'italic';
+                quoteElem.style.minHeight = '1.5em';
+                timerProgress.parentNode.appendChild(quoteElem);
+            }
+            const quote = breakQuotes[Math.floor(Math.random() * breakQuotes.length)];
+            quoteElem.textContent = quote;
+        }
+        function hideBreakQuote() {
+            if (quoteElem) quoteElem.textContent = '';
+        }
+
+        // Helper: show side quotes based on time intervals
+        function showSideQuote() {
+            if (!sideQuoteElem) {
+                sideQuoteElem = document.getElementById('side-quote');
+            }
+            const quote = sideQuotes[Math.floor(Math.random() * sideQuotes.length)];
+            sideQuoteElem.textContent = quote;
+            sideQuoteElem.classList.add('show');
+            
+            setTimeout(() => {
+                sideQuoteElem.classList.remove('show');
+            }, 4000);
+        }
+
+        function startSideQuotes() {
+            // Clear any existing intervals first
+            stopSideQuotes();
+            
+            // Calculate 25% intervals for work duration
+            const workTimeMs = workDuration * 1000; // Convert to milliseconds
+            const quarterTime = workTimeMs / 4; // 25% of total work time
+            
+            // Show quote at 25% completion
+            setTimeout(() => {
+                if (currentMode === 'work' && timerInterval) {
+                    showSideQuote();
+                }
+            }, quarterTime);
+            
+            // Show quote at 50% completion
+            setTimeout(() => {
+                if (currentMode === 'work' && timerInterval) {
+                    showSideQuote();
+                }
+            }, quarterTime * 2);
+            
+            // Show quote at 75% completion
+            setTimeout(() => {
+                if (currentMode === 'work' && timerInterval) {
+                    showSideQuote();
+                }
+            }, quarterTime * 3);
+        }
+
+        function stopSideQuotes() {
+            if (quoteInterval) {
+                clearInterval(quoteInterval);
+                quoteInterval = null;
+            }
+            if (sideQuoteElem) {
+                sideQuoteElem.classList.remove('show');
+            }
+        }
+
+        // Show settings modal on load
+        window.addEventListener('DOMContentLoaded', () => {
+            const settingsModal = new bootstrap.Modal(document.getElementById('settingsModal'));
+            settingsModal.show();
+        });
+
+        // Update the timer display (MM:SS)
+        function updateTimerDisplay() {
+            const minutes = String(Math.floor(timeLeft / 60)).padStart(2, '0');
+            const seconds = String(timeLeft % 60).padStart(2, '0');
+            timerDisplay.textContent = `${minutes}:${seconds}`;
+            updateProgressRing();
+        }
+
+
+
+        // Start or resume the timer
+        function startTimer() {
+            modeLabel.textContent = (currentMode === 'work') ? 'Work Time' : 'Break Time';
+            if (currentMode === 'break') {
+                showBreakQuote();
+                stopSideQuotes(); // Don't show side quotes during break
+            } else {
+                hideBreakQuote();
+                startSideQuotes(); // Start side quotes during work
+            }
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    timerInterval = null; // Clear the interval reference
+                    playBeep();
+                    if (currentMode === 'work') {
+                        // Work session finished: start break
+                        currentMode = 'break';
+                        timeLeft = breakDuration;
+                        modeLabel.textContent = 'Break Time';
+                        updateTimerDisplay();
+                        startTimer();
+                    } else {
+                        // Break finished: pause after one complete cycle
+                        currentMode = 'work';
+                        timeLeft = workDuration;
+                        updateTimerDisplay();
+                        modeLabel.textContent = 'Work Time';
+                        startBtn.textContent = 'Start';
+                        startBtn.disabled = false;
+                        pauseBtn.disabled = true;
+                        resetBtn.disabled = false;
+                        hideBreakQuote();
+                        stopSideQuotes(); // Stop side quotes when cycle ends
+                    }
+                }
+            }, 1000);
+        }
+
+        // Modal 'Start' button logic: set durations and begin
+        modalStartBtn.addEventListener('click', () => {
+            const workTime = parseInt(workInput.value) || 0;
+            const breakTime = parseInt(breakInput.value) || 0;
+            
+            // Check if times are too short
+            if (workTime < 1 || breakTime < 1) {
+                const funnyMessages = [
+                    "🤔 Less than 1 minute? Are you trying to break the speed record? Study more!",
+                    "⏰ That's faster than my coffee break! Let's be serious - study more!",
+                    "📚 1 minute? Even my cat studies longer than that! Study more!",
+                    "💪 Come on, you can do better than that! Study more!"
+                ];
+                const randomMessage = funnyMessages[Math.floor(Math.random() * funnyMessages.length)];
+                alert(randomMessage);
+                return;
+            }
+            
+            workDuration = workTime * 60;
+            breakDuration = breakTime * 60;
+            timeLeft = workDuration;
+            updateTimerDisplay();
+            const settingsModal = bootstrap.Modal.getInstance(document.getElementById('settingsModal'));
+            settingsModal.hide();
+            startBtn.disabled = true;
+            pauseBtn.disabled = false;
+            resetBtn.disabled = false;
+            currentMode = 'work';
+            modeLabel.textContent = 'Work Time';
+            updateTimerDisplay();
+            startTimer();
+        });
+
+        // Start/Resume button (for resuming after pause)
+        startBtn.addEventListener('click', () => {
+            startTimer();
+            startBtn.disabled = true;
+            pauseBtn.disabled = false;
+            resetBtn.disabled = false;
+        });
+
+        // Pause button
+        pauseBtn.addEventListener('click', () => {
+            clearInterval(timerInterval);
+            timerInterval = null; // Clear the interval reference
+            stopSideQuotes(); // Stop side quotes when paused
+            startBtn.textContent = 'Resume';
+            startBtn.disabled = false;
+            pauseBtn.disabled = true;
+        });
+
+        // Reset button: stops everything and resets to initial state
+        resetBtn.addEventListener('click', () => {
+            clearInterval(timerInterval);
+            timerInterval = null; // Clear the interval reference
+            stopSideQuotes(); // Stop side quotes when reset
+            currentMode = 'work';
+            timeLeft = workDuration;
+            updateTimerDisplay();
+            modeLabel.textContent = 'Work Time';
+            startBtn.textContent = 'Start';
+            startBtn.disabled = false;
+            pauseBtn.disabled = true;
+            resetBtn.disabled = true;
+            hideBreakQuote();
+        });
+
+        // Adjust Settings button: refresh the page
+        adjustBtn.addEventListener('click', () => {
+            location.reload();
+        });
+
+        // Initialize display (no auto-start)
+        updateTimerDisplay();
+        modeLabel.textContent = 'Work Time';
+        hideBreakQuote();
+
+        // Side Animations
+        function initSideAnimations() {
+            // Floating elements animation (both sides)
+            const floatingElements = document.querySelectorAll('.floating-element');
+            floatingElements.forEach((element, index) => {
+                gsap.to(element, {
+                    y: -20,
+                    rotation: 180,
+                    duration: 4 + index,
+                    repeat: -1,
+                    yoyo: true,
+                    ease: "power1.inOut",
+                    delay: index * 0.3
+                });
+            });
+
+            // Particle system
+            function createParticle() {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                // Randomly choose left or right side
+                const isLeft = Math.random() > 0.5;
+                if (isLeft) {
+                    particle.style.left = Math.random() * 150 + 30 + 'px';
+                } else {
+                    particle.style.right = Math.random() * 150 + 30 + 'px';
+                }
+                particle.style.top = Math.random() * window.innerHeight + 'px';
+                document.getElementById('particles-container').appendChild(particle);
+
+                gsap.to(particle, {
+                    x: isLeft ? Math.random() * 50 : Math.random() * -50,
+                    y: Math.random() * 50 - 25,
+                    opacity: 0,
+                    duration: 3 + Math.random() * 2,
+                    onComplete: () => {
+                        particle.remove();
+                    }
+                });
+            }
+
+            // Create particles periodically (less frequent)
+            setInterval(createParticle, 3000);
+
+            // Subtle pulsing effect for floating elements
+            gsap.to(floatingElements, {
+                scale: 1.1,
+                duration: 2,
+                repeat: -1,
+                yoyo: true,
+                ease: "power1.inOut",
+                stagger: 0.5
+            });
+        }
+
+        // Initialize side animations when page loads
+        window.addEventListener('load', initSideAnimations);
+
+
+    </script>
+</body>
+
+</html>

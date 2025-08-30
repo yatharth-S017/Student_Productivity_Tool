@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Glowy Microjournal 📒✨</title>
+  <meta name="viewport" content="width=1024">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <style>
+    :root {
+      --neon-green: #28ff38;
+      --neon-blue: #00cfff;
+      --deep-bg: #181828;
+      --cat-purple: #db34ff;
+      --cat-yellow: #ffc833;
+      --cat-bg: #211354aa;
+      --glow-bg: #232040ee;
+      --white-neon: #fff;
+    }
+    html,body {height:100%;margin:0;padding:0;}
+    body {
+      font-family: system-ui, Arial, sans-serif;
+      background: #0a0a0c;
+      color: #fff;
+      min-height:100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow-x: hidden;
+      font-size: 0.97rem;
+    }
+    #mj-app {
+      display: flex;
+      flex-direction: row;
+      border-radius: 22px;
+      box-shadow: 0 0 28px #00ffc622, 0 0 90px #323fff33;
+      background: var(--deep-bg);
+      border: 2px solid var(--neon-green);
+      min-width: 1020px;
+      width: 86vw;
+      max-width: 1200px;
+      min-height: 580px;
+      overflow: hidden;
+    }
+    #side-search {
+      background: #182838d9;
+      flex: 0 0 270px;
+      border-right: 2px solid #2af5ff55;
+      padding: 32px 20px;
+      display: flex;
+      flex-direction:column;
+      align-items: center;
+    }
+    #cat-panel {
+      background: #27104eE6;
+      flex: 0 0 210px;
+      border-left: 2px solid #c6aaff55;
+      padding: 32px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .glowy-title {
+      font-weight: bold;
+      font-size: 1.03rem;
+      letter-spacing: 1.1px;
+      margin-bottom: 8px;
+      color: var(--neon-blue);
+      text-shadow: 0 0 12px var(--neon-blue), 0 0 30px #28ffbe70;
+      animation: neon-pulse 2.4s infinite alternate;
+    }
+    @keyframes neon-pulse {
+      from {text-shadow:0 0 3px var(--neon-blue);}
+      to {text-shadow:0 0 16px #38fff690;}
+    }
+    #search-input {
+      width: 100%;
+      padding: 7px 9px;
+      font-size: 0.97rem;
+      border-radius: 5px;
+      background: #142033;
+      color: #f9fef4;
+      border: 2px solid #2af5ff;
+      margin-bottom: 28px;
+      outline: none;
+      box-shadow: 0 0 9px rgba(0, 207, 255, 0.13);
+      transition: border .22s;
+    }
+    #search-input:focus {
+      border: 2px solid var(--cat-yellow);
+      box-shadow: 0 0 14px #ffc83388;
+    }
+    .search-info {
+      color: #b4c9df;
+      font-size: 0.89rem;
+      margin-top: 13px;
+      text-align: left;
+    }
+    #journal-list {
+      flex:1 1 0;
+      overflow-y:auto;
+      width:100%;
+    }
+    .journal-item {
+      background: #26265a77;
+      color: #28f0e8;
+      border-radius: 6px;
+      margin-bottom: 7px;
+      padding: 6px 8px;
+      cursor: pointer;
+      box-shadow: 0 0 6px #00ffd0;
+      font-size: 0.97rem;
+      text-align: left;
+      border: none;
+      transition: background .23s, color .22s;
+    }
+    .journal-item.selected, .journal-item:hover {
+      background: #2bbfaa99;
+      color: #fff;
+    }
+    #main-center {
+      flex:1 1 0;
+      background: #222135cc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      min-width: 340px;
+      padding:0 18px;
+    }
+    .paper {
+      background:white;
+      border-radius: 17px;
+      box-shadow: 0 3px 24px #a0ffe522, 0 1.5px 0 #e0deda;
+      padding: 35px 36px 38px 42px;
+      max-width: 490px;
+      width:100%;
+      min-height:428px;
+      position:relative;
+      display:flex;
+      flex-direction:column;
+      justify-content:flex-end;
+      overflow:hidden;
+      border:2.3px solid #59ffb9;
+      box-shadow: 0 0 18px #2bfede77, 0 0 80px #66ffe53f;
+    }
+    .paper::before {
+      pointer-events:none;
+      z-index:0;
+      content:"";
+      position:absolute;left:0;top:0;right:0;bottom:0;
+      background:
+        repeating-linear-gradient(
+          to bottom,
+          transparent 0,
+          transparent 19px,
+          #eafcf7 20px,
+          transparent 21px
+        );
+      opacity:0.9;
+      border-radius:17px;
+    }
+    .paper-title {
+      font-size: 1.01rem;
+      font-weight:600;
+      color: #21a68d;
+      margin-bottom: 7px;
+      background:transparent;
+      border:none;
+      outline:none;
+      border-radius:4.5px;
+      transition: background .19s;
+      padding:4px 7px 4px 2px;
+      width:100%;
+      z-index:2;
+      box-shadow: 0 0 0 transparent;
+    }
+    .paper-title:focus { background:#d6ffe1; }
+    .paper-area {
+      font-size: 0.97rem;
+      min-height: 152px;
+      padding: 8px 4px 10px 0;
+      background:transparent;
+      color:#192d2e;
+      border:none;
+      outline:none;
+      line-height:21px;
+      resize:vertical;
+      letter-spacing:0.02em;
+      width:100%;
+      z-index:2;
+      font-family:inherit;
+    }
+    .paper-area:focus {background:#e2fff228;}
+    .paper-tips {
+      color:#65decb;
+      font-size:0.85rem;
+      margin-top:6px;
+      margin-bottom:2px;
+      z-index:2;
+    }
+    #save-btn {
+      background: linear-gradient(90deg,#00ffc6,#db34ff);
+      color: #0a2124;
+      border: none;
+      border-radius: 18px;
+      font-size: 0.97rem;
+      font-weight: 700;
+      letter-spacing: 0.9px;
+      padding: 8px 28px;
+      margin: 13px 0 0 0;
+      cursor: pointer;
+      box-shadow: 0 0 10px #00ffd0, 0 0 32px #db34ff33;
+      transition: box-shadow .18s, background .17s, transform .13s;
+      z-index:2;
+      align-self:flex-end;
+    }
+    #save-btn:active, #save-btn.saving {
+      box-shadow: 0 0 44px #fff, 0 0 88px #00ffc6;
+      background: linear-gradient(270deg,#db34ff,#00ffc6);
+    }
+    .page-turn {
+      position: absolute;
+      z-index: 300;
+      left: 0; top: 0; right: 0; bottom: 0;
+      pointer-events:none;
+      background: white;
+      border-radius: 17px;
+      box-shadow: 0 2px 16px #72fdc540, 2.5px 0 8px #b7b7b769;
+      overflow: hidden;
+    }
+    .cat-title {
+      color: #b97ff1;
+      font-size: 0.97rem;
+      font-weight: bold;
+      margin-bottom: 0.7rem;
+      letter-spacing:1px;
+      text-shadow: 0 0 10px #b574ff55;
+    }
+    .cat-list {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 13px;
+      margin-bottom: 22px;
+    }
+    .cat-item {
+      background: var(--cat-bg);
+      color: var(--cat-purple);
+      font-size: 1.01rem;
+      padding: 7px 16px 7px 12px;
+      border-radius: 9px;
+      letter-spacing: 0.9px;
+      cursor: pointer;
+      transition: background .16s, color .18s, box-shadow .11s, font-size .18s, padding .18s;
+      box-shadow: 0 0 7px #db34ff33;
+      border: none;
+      outline: none;
+      font-weight: 500;
+    }
+    .cat-item.selected, .cat-item:hover {
+      background: var(--cat-yellow);
+      color: #2d0049;
+      box-shadow: 0 0 18px #ffb30065;
+    }
+    #add-cat-form {
+      margin-top: 17px;
+      display: flex;
+      gap: 6px;
+      width: 100%;
+    }
+    #new-cat-inp {
+      flex: 2 1 0;
+      padding: 6px 8px;
+      border-radius: 7px;
+      border: 1.3px solid #a967e5;
+      background: #231643;
+      color: #fff;
+    }
+    #add-cat-btn {
+      flex: 1 1 0;
+      border: none;
+      border-radius: 13px;
+      background: linear-gradient(90deg, #b574ff 60%, #ffc833 100%);
+      color: #fff;
+      font-weight: 700;
+      letter-spacing: 0.9px;
+      font-size: 1.01rem;
+      cursor: pointer;
+      padding: 8px 0;
+      margin-left: 2px;
+      min-width: 100px;
+      box-shadow: 0 2px 10px #db34ff33;
+      transition: background 0.18s, box-shadow 0.18s, color 0.18s, font-size 0.18s, padding 0.18s;
+    }
+    #add-cat-btn:hover {
+      background: linear-gradient(90deg, #ffc833 60%, #b574ff 100%);
+      color: #2b002f;
+      box-shadow: 0 4px 18px #ffc83355;
+    }
+    @media (max-width: 1070px) {
+      #mj-app {min-width:700px;width:99vw;}
+      #main-center {padding:0 3vw;}
+      .paper {max-width:99vw;}
+      #side-search, #cat-panel {padding:18px 5px;}
+    }
+    @media (max-width: 710px) {
+      #mj-app {flex-direction: column; min-width:unset; max-width:100vw;}
+      #side-search,#cat-panel {flex:unset; width:100vw; border:none;}
+      #main-center {width:100vw;}
+      .paper {padding: 17px 5px 22px 9px;}
+    }
+    ::-webkit-scrollbar {width: 6px;}
+    ::-webkit-scrollbar-thumb {background:#422bff60;}
+
+
+    .journal-item{
+      color:#28f0e885;
+      cursor:none;
+    }
+  </style>
+</head>
+<body>
+  <div id="mj-app">
+    <!-- Search panel -->
+    <div id="side-search">
+      <div class="glowy-title">🔎 Look Up Your Memories</div>
+      <input type="search" id="search-input" placeholder="Search by title or category..." autocomplete="off">
+      <div id="journal-list"></div>
+      <div class="search-info">
+        ✨ Your past adventures and thoughts live here!<br>
+      </div>
+    </div>
+    <!-- Main writing area -->
+    <div id="main-center">
+      <div class="paper" id="paper">
+        <input type="text" class="paper-title" id="paper-title" maxlength="50" placeholder="Give your page a cool title!">
+        <textarea class="paper-area" id="paper-area" maxlength="450" placeholder="Let it all out... dreams, plans, rants, doodles!"></textarea>
+        <div id="fun-emoji" style="position:absolute;right:18px;bottom:80px;font-size:1.5em;user-select:none;pointer-events:none;z-index:10;">🐾</div>
+        <div style="flex:1 1 0;"></div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:7px;width:100%;margin-top:8px;">
+          <span class="paper-tips" style="align-self:flex-start;">
+            👉 Pick a category on the right before saving.<br>
+            (Need a new one? Just add it!)
+          </span>
+          <button id="save-btn">✨ Add to Journal!</button>
+        </div>
+      </div>
+    </div>
+    <!-- Category panel -->
+    <div id="cat-panel">
+      <div class="cat-title">🔖 Categories</div>
+      <div class="cat-list" id="cat-list"></div>
+      <form id="add-cat-form">
+        <input type="text" id="new-cat-inp" placeholder="Make your own.." maxlength="20">
+        <button type="submit" id="add-cat-btn">+ Add</button>
+      </form>
+    </div>
+  </div>
+<script>
+  // --- Categories (user adds/removes)
+  let categories = JSON.parse(localStorage.getItem('mj-categories') || '["Personal","Work","Ideas"]');
+  let selectedCat = categories[0] || null;
+  let journals = JSON.parse(localStorage.getItem('mj-journals') || "[]");
+  let selectedJournalIdx = null;
+
+  // --- Shortcuts
+  const catList = document.getElementById("cat-list");
+  const journalListEl = document.getElementById('journal-list');
+  const area = document.getElementById('paper-area');
+  const title = document.getElementById('paper-title');
+  const saveBtn = document.getElementById('save-btn');
+  function renderCategories() {
+    catList.innerHTML = "";
+    categories.forEach((cat, catIdx)=>{
+      const wrap = document.createElement('div');
+      wrap.style.display = 'flex';
+      wrap.style.alignItems = 'center';
+      wrap.style.gap = '7px';
+      // Category button
+      const item = document.createElement('button');
+      item.type = "button";
+      item.textContent = cat;
+      item.className = "cat-item" + (cat === selectedCat ? " selected" : "");
+      item.onclick = ()=>{
+        selectedCat = cat;
+        renderCategories();
+        gsap.fromTo(item, {x:19, opacity:0.39}, {x:0, opacity:1, duration:0.29, ease:"power2.out"});
+      };
+      wrap.appendChild(item);
+      // Delete button
+      const delBtn = document.createElement('button');
+      delBtn.type = 'button';
+      delBtn.innerHTML = '🗑️';
+      delBtn.title = 'Zap this category (all its pages will be gone!)';
+      delBtn.style.background = 'none';
+      delBtn.style.border = 'none';
+      delBtn.style.cursor = 'pointer';
+      delBtn.style.fontSize = '1.1em';
+      delBtn.onclick = (e)=>{
+        e.stopPropagation();
+        if(confirm(`Are you sure you want to delete "${cat}" and everything in it?`)){
+          // Remove journals in this category
+          journals = journals.filter(j=>j.category!==cat);
+          // Remove category
+          categories.splice(catIdx,1);
+          if(selectedCat===cat) selectedCat = categories[0]||null;
+          localStorage.setItem('mj-categories',JSON.stringify(categories));
+          localStorage.setItem('mj-journals',JSON.stringify(journals));
+          renderCategories();
+          renderJournalList(document.getElementById('search-input').value);
+        }
+      };
+      wrap.appendChild(delBtn);
+      catList.appendChild(wrap);
+    });
+  }
+  renderCategories();
+
+  // --- Add category
+  document.getElementById("add-cat-form").addEventListener("submit", function(e){
+    e.preventDefault();
+    const val = document.getElementById('new-cat-inp').value.trim();
+    if(val && !categories.includes(val)){
+      categories.push(val);
+      selectedCat = val;
+      localStorage.setItem('mj-categories',JSON.stringify(categories));
+      renderCategories();
+      document.getElementById('new-cat-inp').value = "";
+      gsap.fromTo('.cat-item.selected',{x:50,scale:0.7,opacity:0.12}, {x:0,scale:1,opacity:1,duration:0.42,ease:"back.out(1.4)"});
+    }
+  });
+
+  // --- Journal list rendering
+  function renderJournalList(filterVal="") {
+    journalListEl.innerHTML = "";
+    let filtered = journals.filter(j =>
+      j.title.toLowerCase().includes(filterVal.toLowerCase()) ||
+      (j.category && j.category.toLowerCase().includes(filterVal.toLowerCase()))
+    );
+    if (filtered.length === 0) {
+      journalListEl.innerHTML = '<div class="journal-item">No writings found.</div>';
+      return;
+    }
+    filtered.forEach((j, idx) => {
+      const wrap = document.createElement('div');
+      wrap.style.display = 'flex';
+      wrap.style.alignItems = 'center';
+      wrap.style.gap = '7px';
+      wrap.style.marginBottom = '10px';
+      // Journal item
+      const el = document.createElement('div');
+      el.className = "journal-item" + (idx===selectedJournalIdx?" selected":"");
+      el.style.flex = '1';
+      el.innerHTML = `<b>${j.title}</b> <span style="font-size:0.92em;float:right;color:#ffc833aa;">${j.category || ''}</span>`;
+      el.onclick = ()=>{
+        selectedJournalIdx = journals.findIndex(oj => oj.title === j.title && oj.date === j.date && oj.category===j.category);
+        area.value = j.entry;
+        title.value = j.title;
+        selectedCat = j.category;
+        renderCategories();
+        renderJournalList(document.getElementById('search-input').value);
+        gsap.fromTo(el, {background:'#323fff77',x:-20,scale:0.93}, {background:'#2bbfaa99',scale:1,x:0,duration:0.42,ease:'power2.out'});
+      }
+      wrap.appendChild(el);
+      // Delete button
+      const delBtn = document.createElement('button');
+      delBtn.type = 'button';
+      delBtn.innerHTML = '🗑️';
+      delBtn.title = 'Erase this page from history';
+      delBtn.style.background = 'none';
+      delBtn.style.border = 'none';
+      delBtn.style.cursor = 'pointer';
+      delBtn.style.fontSize = '1.1em';
+      delBtn.onclick = (e)=>{
+        e.stopPropagation();
+        if(confirm(`Delete "${j.title}" from your journal forever?`)){
+          const idxInJournals = journals.findIndex(oj => oj.title === j.title && oj.date === j.date && oj.category===j.category);
+          if(idxInJournals!==-1){
+            journals.splice(idxInJournals,1);
+            localStorage.setItem('mj-journals',JSON.stringify(journals));
+            renderJournalList(document.getElementById('search-input').value);
+          }
+        }
+      };
+      wrap.appendChild(delBtn);
+      journalListEl.appendChild(wrap);
+    });
+  }
+  renderJournalList();
+
+  document.getElementById('search-input').addEventListener('input', function(){
+    renderJournalList(this.value);
+  });
+
+  // Save with GSAP page flip
+  saveBtn.onclick = ()=>{
+    const entry = area.value.trim();
+    const t = title.value.trim();
+    if(!entry || !t || !selectedCat){
+      gsap.to('#paper',{x:-15, duration:0.11, repeat:3, yoyo:true});
+      saveBtn.classList.add('saving');
+      setTimeout(() => saveBtn.classList.remove('saving'), 360);
+      return;
+    }
+    const nowDate = new Date().toLocaleString();
+    if(selectedJournalIdx!==null && journals[selectedJournalIdx]
+      && journals[selectedJournalIdx].title===t && journals[selectedJournalIdx].category===selectedCat){
+      journals[selectedJournalIdx].entry = entry;
+      journals[selectedJournalIdx].date = nowDate;
+    } else {
+      journals.push({title: t, entry, date: nowDate, category: selectedCat});
+      selectedJournalIdx = journals.length-1;
+    }
+    localStorage.setItem('mj-journals', JSON.stringify(journals));
+    renderJournalList(document.getElementById('search-input').value);
+
+    // PAGE FLIP animation (realistic diary page curl):
+    const newPage = document.createElement('div');
+    newPage.className = 'page-turn';
+    document.getElementById('main-center').appendChild(newPage);
+    // Add shadow for realism
+    newPage.style.boxShadow = '0 8px 40px #0006, 0 0 0 #fff0';
+    // Set transform origin to bottom right
+    gsap.set(newPage, {rotateY: 0, rotateZ: 0, scaleX: 1, scaleY: 1, skewX: 0, transformOrigin: "100% 100%"});
+    gsap.to(newPage, {
+      rotateY: -110, // 3D curl
+      rotateZ: -8,
+      scaleX: 0.2,
+      scaleY: 0.9,
+      skewX: 18,
+      duration: 0.85,
+      ease: 'power2.in',
+      boxShadow: '0 0 0 #fff0, -40px 0 60px #0008',
+      onComplete: ()=>{
+        newPage.parentNode && newPage.parentNode.removeChild(newPage);
+      }
+    });
+
+    // Clear fields for a new entry
+    title.value = "";
+    area.value = "";
+    selectedJournalIdx = null;
+    saveBtn.classList.add('saving');
+    setTimeout(() => saveBtn.classList.remove('saving'), 350);
+
+    // 1 in 3 chance for confetti burst
+    if(Math.random()<0.34) confettiBurst();
+  };
+
+  // Unselect index when typing
+  title.addEventListener('focus', ()=>{selectedJournalIdx=null;});
+  area.addEventListener('focus', ()=>{selectedJournalIdx=null;});
+
+  // On load: autofocus
+  window.onload = ()=>{
+    if(!document.getElementById('paper-title').value){
+      document.getElementById('paper-title').focus();
+    }else{
+      document.getElementById('paper-area').focus();
+    }
+  }
+
+  // Auto-expand textarea
+  area.setAttribute('rows', '1');
+  area.style.overflowY = 'hidden';
+  area.addEventListener('input', function() {
+    this.style.height = 'auto';
+    this.style.height = (this.scrollHeight) + 'px';
+  });
+
+  // Fun emoji animation
+  const funEmoji = document.getElementById('fun-emoji');
+  gsap.to(funEmoji, {y: -18, repeat: -1, yoyo: true, duration: 0.7, ease: 'sine.inOut'});
+  // Confetti burst on save (occasionally)
+  function confettiBurst() {
+    for(let i=0;i<18;i++){
+      const conf = document.createElement('div');
+      conf.textContent = ['🎉','✨','💥','🌟','🥳','🦄'][Math.floor(Math.random()*6)];
+      conf.style.position = 'absolute';
+      conf.style.left = (220 + Math.random()*80) + 'px';
+      conf.style.top = (180 + Math.random()*40) + 'px';
+      conf.style.fontSize = (1+Math.random()*1.2)+'em';
+      conf.style.pointerEvents = 'none';
+      conf.style.zIndex = 999;
+      document.getElementById('main-center').appendChild(conf);
+      gsap.to(conf, {
+        y: -80-Math.random()*60,
+        x: (Math.random()-0.5)*120,
+        opacity: 0,
+        rotate: Math.random()*360,
+        duration: 1.2+Math.random()*0.5,
+        ease: 'power2.out',
+        onComplete: ()=>conf.remove()
+      });
+    }
+  }
+</script>
+</body>
+</html>

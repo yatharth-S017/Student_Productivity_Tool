@@ -1,13 +1,831 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>StudyBuddy</title>
+  <style>
+         body {
+       background: #1E1E1E;
+       margin: 0;
+       padding: 0;
+       font-family: 'Segoe UI', Arial, sans-serif;
+       color: #F5F6FA;
+       overflow-x: hidden;
+       overflow-y: auto;
+       scroll-behavior: smooth;
+       -webkit-overflow-scrolling: touch;
+     }
+
+    .navbar-outer {
+      position: sticky;
+      top: 10px;
+      background: #1E1E1E;
+      border-radius: 42px;
+      padding: 0 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: fit-content;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.12);
+      z-index: 100;
+      margin: 20px auto;
+    }
+    .navbar-inner {
+      display: flex;
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(8px);
+      border-radius: 32px;
+      padding: 0 24px;
+    }
+    .navbar-link {
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      color: #fff;
+      padding: 14px 26px;
+      font-size: 1rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      border-radius: 24px;
+      transition: all 0.3s ease;
+      margin: 0 4px;
+    }
+    .navbar-link:hover {
+      color: #39FF14;
+      transform: translateY(-2px);
+    }
+    @media (max-width: 600px) {
+      .navbar-inner { padding: 0 8px; }
+      .navbar-link { padding: 10px 12px; font-size: 1rem; }
+    }
+
+    /* HERO: smaller, less vertical space */
+    .center-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      padding-left: 5vw;
+      padding-top: 20vh;
+      z-index: 2;
+      position: relative;
+    }
+    @media (max-width: 700px) {
+      .center-content {
+        padding-left: 0;
+        align-items: center;
+        padding-top: 3vh;
+        padding-bottom: 3vh;
+        min-height: 45vh;
+      }
+    }
+    .main-text {
+      font-size: 7vw;
+      font-weight: 800;
+      line-height: 1.1;
+      margin: 0;
+    }
+    .main-text span {
+      display: inline-block;
+      transition: color 0.3s;
+    }
+    .main-text span.spin { color: #52ea0b; }
+    .tagline {
+      font-size: 2vw;
+      margin-top: 2vw;
+      color: #9CA3AF;
+    }
+
+    /* About Section: no big gap, gently below hero */
+    .about-section {
+      display: flex;
+      align-items: flex-start;
+      padding-left: 5vw;
+      padding-top: 6vh;
+      padding-bottom: 2vh;
+      background: #f5f5f5;
+      margin-top: 10vh;
+      height: 60vh;
+      min-height: 60vh;
+      position: relative;
+      overflow: hidden;
+    }
+    .about-text {
+      font-size: 2.8vw;
+      font-weight: 600;
+      line-height: 1.3;
+      max-width: 1100px;
+      color: #0a0a0a;
+      font-family: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      letter-spacing: -0.02em;
+    }
+    .about-text span {
+      display: block;
+    }
+
+    @media (max-width: 700px) {
+      .about-section { padding-left: 3vw; padding-top: 2vh; padding-bottom: 2vh; }
+      .about-text { font-size: 1.2rem; }
+      .about-text span { margin-bottom: 1rem; }
+    }
+
+    .divider {
+      width: 50%;
+      border: none;
+      border-top: 1px solid #404040;
+      margin: 33vh auto 0 auto;
+    }
+
+    /* Feature Cards */
+    .feature-card {
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      background: linear-gradient(135deg, #1a1a1a 0%, #242424 50%, #1a1a1a 100%);
+      border: 1px solid rgba(57,255,20,0.15);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(57,255,20,0.08);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(circle at 20% 20%, rgba(57,255,20,0.06) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(0,255,204,0.04) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+
+
+
+
+    .feature-card .card-content {
+      padding: 20px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 4px 12px rgba(74,222,128,0.12);
+      border-color: rgba(74,222,128,0.25);
+    }
+
+    .feature-card .icon {
+      font-size: 40px;
+      margin-bottom: 15px;
+    }
+
+    .feature-card .icon img {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .feature-card h3 {
+      font-size: 20px;
+      margin: 0 0 10px;
+      color: #4ade80;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .feature-card p {
+      font-size: 14px;
+      color: #d1d5db;
+      margin-bottom: 20px;
+      line-height: 1.5;
+      font-weight: 400;
+    }
+
+    .feature-card .btn {
+      display: inline-block;
+      padding: 10px 16px;
+      background: rgba(74,222,128,0.08);
+      color: #4ade80;
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 14px;
+      border: 1px solid rgba(74,222,128,0.2);
+      transition: all 0.3s ease;
+      font-weight: 500;
+    }
+
+    .feature-card .btn:hover {
+      background: rgba(74,222,128,0.15);
+      color: #ffffff;
+      border-color: rgba(74,222,128,0.4);
+      transform: translateY(-1px);
+    }
+
+    @media (max-width: 700px) {
+      #features {
+        padding: 40px 20px;
+        height: auto;
+        min-height: 100vh;
+      }
+      #features > div > div {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+    }
+
+
+
+    /* ===== Testimonials Section ===== */
+    .wrap {
+      max-width: 1200px;
+      margin: 48px auto;
+      padding: 0 20px;
+    }
+
+    .header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      gap: 16px;
+    }
+
+    .title {
+      font-size: clamp(22px, 4vw, 32px);
+      font-weight: 800;
+      color: #39FF14;
+    }
+
+    .subtitle {
+      color: #888888;
+      font-size: 14px;
+    }
+
+    /* ===== Scroll Row ===== */
+    .rail {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .viewport {
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      scroll-snap-type: x mandatory;
+      display: flex;
+      gap: 16px;
+      padding: 14px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(57,255,20,.06), rgba(0,255,204,.02));
+      box-shadow: inset 0 0 0 1px rgba(57,255,20,.15);
+      scroll-behavior: smooth;
+      scrollbar-width: none;   /* Firefox */
+      
+    }
+    .viewport::-webkit-scrollbar {
+      display: none;           /* Chrome, Safari */
+    }
+
+    /* ===== Card ===== */
+    .card {
+      flex: 0 0 clamp(200px, 26vw, 260px);
+      scroll-snap-align: start;
+      background: #0d0d0d;
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      font-size: 0.85rem;
+      color: #ffffff;
+      height: 180px;
+      box-shadow: 0 0 10px rgba(57,255,20,0.35),
+                  inset 0 0 0 1px rgba(255,255,255,0.05);
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 0 20px rgba(57,255,20,0.7),
+                  inset 0 0 0 1px rgba(255,255,255,0.08);
+    }
+
+    /* ===== Avatar ===== */
+    .avatar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .avatar img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 0 0 2px rgba(57,255,20,.4);
+    }
+    .who {
+      display: flex;
+      flex-direction: column;
+    }
+    .name {
+      font-weight: 700;
+      font-size: 15px;
+      color: #39FF14;
+    }
+    .role {
+      font-size: 12px;
+      color: #888888;
+    }
+
+    /* ===== Content ===== */
+    .stars {
+      font-size: 14px;
+      letter-spacing: 1px;
+      color: #39FF14;
+    }
+    .quote {
+      font-size: 14px;
+      line-height: 1.5;
+      color: #ffffff;
+    }
+
+    /* ===== Gradient Bar (optional) ===== */
+    .bar {
+      height: 4px;
+      border-radius: 100px;
+      background: linear-gradient(90deg, #39FF14, #00ffcc);
+      opacity: .9;
+    }
+
+    /* ===== Edge Fade ===== */
+    .fade-left, .fade-right {
+      pointer-events: none;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 60px;
+      z-index: 2;
+    }
+    .fade-left { left: 0; background: linear-gradient(90deg, #1E1E1E, transparent); }
+    .fade-right { right: 0; background: linear-gradient(270deg, #1E1E1E, transparent); }
+
+    /* ===== Navigation Buttons ===== */
+    .arrow {
+      border: none;
+      background: #0d0d0d;
+      color: #39FF14;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      box-shadow: 0 0 10px rgba(57,255,20,0.35);
+      transition: all .2s ease;
+    }
+
+    .arrow {
+      display: none !important;  /* hide from screen */
+      visibility: hidden;
+    }
+    .arrow:hover {
+      background: #39FF14;
+      color: #000000;
+      box-shadow: 0 0 15px rgba(57,255,20,0.8);
+    }
+    .arrow:active { transform: scale(.95); }
+    .arrow:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(57,255,20,.35); }
+    .arrow:disabled { opacity: .3; cursor: default; }
+
+    @media (max-width: 640px) {
+      .arrow { display: none; }
+      .wrap { padding: 0 14px; }
+    }
+  </style>
 </head>
 <body>
-    <div style="font-size: 50px; color: red;">
-        this is first line
+  <div id="home"></div>
+
+  <!-- Navbar -->
+  <nav class="navbar-outer">
+    <div class="navbar-inner">
+      <a href="#home" class="anchor"><button class="navbar-link">Home</button></a>
+      <a href="#about" class="anchor"><button class="navbar-link" onclick="document.getElementById('about').scrollIntoView({behavior:'smooth'})">About</button></a>
+      <a href="#features" class="anchor"><button class="navbar-link">Features</button></a>
     </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <div class="center-content">
+    <span class="main-text" id="mainText">
+      <span>S</span><span>T</span><span>U</span><span>D</span><span>Y</span>
+      <span>B</span><span>U</span><span>D</span><span>D</span><span>Y</span>
+    </span>
+    <span class="tagline">Studying is hard. Mocking it is fun.</span>
+  </div>
+  
+  <hr class="divider">
+
+  <!-- About Section -->
+<section id="about" 
+  style="display:flex; align-items:center; justify-content:space-between; 
+         padding:6vh 5vw 2vh 5vw; background:#f5f5f5; margin-top:10vh; 
+         height:60vh; min-height:60vh; overflow:hidden; gap:5vw;">
+
+  <!-- Left: Text -->
+  <div 
+    style="flex:1; font-size:2.2vw; font-weight:600; line-height:1.3; color:#0a0a0a; 
+           font-family:'Inter','SF Pro Display',-apple-system,BlinkMacSystemFont,
+                        'Segoe UI',Roboto,sans-serif; letter-spacing:-0.02em; max-width:600px;">
+    <span style="display:block; margin-bottom:1rem;">
+      StudyBuddy helps you shut down distractions and 
+      <span style="color:#39FF14;">get sh*t done.</span>
+    </span>
+    <span style="display:block; margin-bottom:1rem;">
+      From micro journaling to goal-setting, 
+      <span style="color:#39FF14;">it's got your chaos covered.</span>
+    </span>
+    <span style="display:block; margin-bottom:1rem;">
+      All in one sleek setup so you can 
+      <span style="color:#39FF14;">stop stressing and start flexing. 💪</span>
+    </span>
+  </div>
+
+  <!-- Right: Video -->
+  <div style="flex:1; height:100%; display:flex; align-items:center; justify-content:center;">
+    <video autoplay muted loop playsinline 
+      style="width:100%; height:100%; object-fit:cover; border-radius:16px; 
+             box-shadow:0 4px 20px rgba(0,0,0,0.1);">
+      <source src="./public/video/about-sec.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  </div>
+</section>
+
+
+  <!-- Features Section -->
+  <section id="features" style="padding: 80px 40px; background: linear-gradient(135deg, #1E1E1E 0%, #1a1a1a 50%, #1E1E1E 100%); height: 100vh; min-height: 100vh; margin-top: 0; display: flex; align-items: center; position: relative; overflow: hidden;">
+    <!-- Neon background hints -->
+    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at 20% 30%, rgba(57,255,20,0.03) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(0,255,204,0.02) 0%, transparent 50%), radial-gradient(circle at 50% 50%, rgba(57,255,20,0.01) 0%, transparent 70%); pointer-events: none;"></div>
+    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(45deg, transparent 0%, rgba(57,255,20,0.02) 25%, transparent 50%, rgba(0,255,204,0.02) 75%, transparent 100%); pointer-events: none;"></div>
+    <div style="max-width: 1100px; margin: 0 auto; width: 100%;">
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+        <!-- Card 1 -->
+        <div class="feature-card">
+          <div class="card-content">
+            <div class="icon">
+              <img src="./public/image/pomodoro-timer.jpg" alt="Pomodoro Timer">
+            </div>
+            <h3>Pomodoro Timer</h3>
+            <p>Stay focused with timed study sessions and breaks to maximize your productivity.</p>
+            <a href="pomodorotimer.html" target="_blank" class="btn">Explore →</a>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="feature-card">
+          <div class="card-content">
+            <div class="icon">
+              <img src="./public/image/productivity sore.jpg" alt="Productivity Score">
+            </div>
+            <h3>Productivity Score</h3>
+            <p>Track your daily progress and get insights into your study habits and efficiency.</p>
+             <a href="#" class="btn" onclick="window.open('productivityScore.html', '_blank')">Explore →</a>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="feature-card">
+          <div class="card-content">
+            <div class="icon">
+              <img src="./public/image/goalsetter.jpg" alt="Goal Setter">
+            </div>
+            <h3>Goal Setter</h3>
+            <p>Set clear academic goals and break them down into manageable milestones.</p>
+            <a href="goalSetter.html" target="_blank" class="btn">Explore →</a>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="feature-card">
+          <div class="card-content">
+            <div class="icon">
+              <img src="./public/image/revision-too.jpg" alt="Revision Tool">
+            </div>
+            <h3>Revision Tool</h3>
+            <p>Organize your study materials and create effective revision schedules.</p>
+            <a href="revisionTool.html" target="_blank" class="btn">Explore →</a>
+          </div>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="feature-card">
+          <div class="card-content">
+            <div class="icon">
+              <img src="./public/image/resource vault.jpg" alt="Resource Vault">
+            </div>
+            <h3>Resource Vault</h3>
+            <p>Store and organize all your study resources in one centralized location.</p>
+            <a href="resource.html" target="_blank" class="btn">Explore →</a>
+          </div>
+        </div>
+
+        <!-- Card 6 -->
+        <div class="feature-card">
+          <div class="card-content">
+            <div class="icon">
+              <img src="./public/image/journal.jpg" alt="Micro Journal">
+            </div>
+            <h3>Micro Journal</h3>
+            <p>Quick daily reflections to track your learning journey and insights.</p>
+            <a href="microJournal.html" target="_blank" class="btn">Explore →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <div class="wrap">
+    <div class="header">
+      <div>
+        <div class="title">What our customers say</div>
+        <div class="subtitle">Real testimonials</div>
+      </div>
+      <div style="display:flex; gap:10px; align-items:center">
+        <button class="arrow" id="prev" aria-label="Scroll left" title="Scroll left">&#8592;</button>
+        <button class="arrow" id="next" aria-label="Scroll right" title="Scroll right">&#8593;</button>
+      </div>
+    </div>
+
+    <div class="rail">
+      <div class="fade-left" aria-hidden="true"></div>
+      <div class="fade-right" aria-hidden="true"></div>
+
+<div class="viewport" id="viewport" tabindex="0" aria-label="Testimonials carousel">
+<!-- 10 testimonial cards -->
+<article class="card" aria-label="Testimonial 1">
+  <div class="avatar">
+    <img src="https://picsum.photos/seed/t1/80/80"/>
+    <div class="who">
+      <span class="name">Pappu Pager</span>
+      <span class="role">B.Tech 2nd Year</span>
+    </div>
+  </div>
+  <div class="stars" aria-hidden="true">★★★★★</div>
+  <p class="quote">"Earlier I used to forget assignments. Now I get reminders on time and finally submitted before deadline. Maa bhi proud!"</p>
+</article>
+
+<article class="card" aria-label="Testimonial 2">
+  <div class="avatar">
+    <img src="https://picsum.photos/seed/t2/80/80"/>
+    <div class="who">
+      <span class="name">Guddu Gober</span>
+      <span class="role">MBA Student</span>
+    </div>
+  </div>
+  <div class="stars" aria-hidden="true">★★★★★</div>
+  <p class="quote">"Group projects became less painful. We actually finished PPTs 2 days early. Shocking, I know."</p>
+</article>
+
+<article class="card" aria-label="Testimonial 3">
+  <div class="avatar">
+    <img src="https://picsum.photos/seed/t3/80/80"/>
+    <div class="who">
+      <span class="name">Pintu Python</span>
+      <span class="role">CS Freshman</span>
+    </div>
+  </div>
+  <div class="stars" aria-hidden="true">★★★★☆</div>
+  <p class="quote">"Tracks my study hours and breaks. I ditched 3 random habit apps, now just use this one."</p>
+</article>
+
+<article class="card" aria-label="Testimonial 4">
+  <div class="avatar">
+    <img src="https://picsum.photos/seed/t4/80/80"/>
+    <div class="who">
+      <span class="name">Samosa Shankar</span>
+      <span class="role">Engineering Senior</span>
+    </div>
+  </div>
+  <div class="stars" aria-hidden="true">★★★★★</div>
+  <p class="quote">"Made a full study timetable in 10 mins. Even my lab partner was impressed (and he’s never impressed)."</p>
+</article>
+
+<article class="card" aria-label="Testimonial 5">
+  <div class="avatar">
+    <img src="https://picsum.photos/seed/t5/80/80"/>
+    <div class="who">
+      <span class="name">Bhaukal Bihari</span>
+      <span class="role">Hostel Student</span>
+    </div>
+  </div>
+  <div class="stars" aria-hidden="true">★★★★★</div>
+  <p class="quote">"Used to miss half the classes. Now the app literally drags me to class with reminders. Attendance safe."</p>
+</article>
+
+<article class="card" aria-label="Testimonial 6">
+  <div class="avatar">
+    <img src="https://picsum.photos/seed/t6/80/80"/>
+    <div class="who">
+      <span class="name">Tapori Tiwar</span>
+      <span class="role">BA Final Year</span>
+    </div>
+  </div>
+  <div class="stars" aria-hidden="true">★★★★☆</div>
+  <p class="quote">"I love the simple design. Setting tasks feels less like work, more like sending memes."</p>
+</article>
+
+<article class="card" aria-label="Testimonial 7">
+  <div class="avatar">
+    <img src="https://picsum.photos/seed/t7/80/80"/>
+    <div class="who">
+      <span class="name">Chappal Chaudhary</span>
+      <span class="role">Polytechnic Student</span>
+    </div>
+  </div>
+  <div class="stars" aria-hidden="true">★★★★★</div>
+  <p class="quote">"Runs smoothly on my budget phone. No lag, no drama. Full paisa vasool."</p>
+</article>
+
+<article class="card" aria-label="Testimonial 8">
+  <div class="avatar">
+    <img src="https://picsum.photos/seed/t8/80/80"/>
+    <div class="who">
+      <span class="name">DJ Dholu</span>
+      <span class="role">College Fresher</span>
+    </div>
+  </div>
+  <div class="stars" aria-hidden="true">★★★★★</div>
+  <p class="quote">"Didn’t even need a tutorial. Installed and started using for daily routine tracking. Chill app."</p>
+</article>
+
+<article class="card" aria-label="Testimonial 9">
+  <div class="avatar">
+    <img src="https://picsum.photos/seed/t9/80/80"/>
+    <div class="who">
+      <span class="name">Kallu Kalia</span>
+      <span class="role">Science Student</span>
+    </div>
+  </div>
+  <div class="stars" aria-hidden="true">★★★★☆</div>
+  <p class="quote">"Finally stopped juggling random notebooks. All my study notes & deadlines are in one place now."</p>
+</article>
+
+<article class="card" aria-label="Testimonial 10">
+  <div class="avatar">
+    <img src="https://picsum.photos/seed/t10/80/80"/>
+    <div class="who">
+      <span class="name">Raju Rangeela</span>
+      <span class="role">Commerce Student</span>
+    </div>
+  </div>
+  <div class="stars" aria-hidden="true">★★★★★</div>
+  <p class="quote">"Best app for students on a budget. Free features are enough to keep my semester sorted."</p>
+</article>
+</div>
+
+
+  <!-- GSAP Animation Script -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollToPlugin.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script>
+    document.querySelectorAll('.anchor').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const targetID = this.getAttribute('href');
+        gsap.to(window, {
+          duration: 1,
+          scrollTo: {
+            y: targetID,
+            offsetY: 0
+          }
+        });
+      });
+    });
+
+    // Intro animation
+    gsap.from("#mainText span", {
+      y: 80,
+      opacity: 0,
+      stagger: 0.08,
+      ease: "back.out(1.7)",
+      duration: 1.2
+    });
+
+    gsap.from(".tagline", {
+      y: 40,
+      opacity: 0,
+      duration: 1,
+      delay: 0.8,
+      ease: "power3.out"
+    });
+
+    // Floating animation for mainText - all directions
+    gsap.to("#mainText", {
+      x: 20,
+      y: -15,
+      rotation: 2,
+      duration: 2,
+      ease: "sine.inOut",
+      yoyo: true,
+      repeat: -1
+    });
+
+    // Additional floating variations for more dynamic movement
+    gsap.to("#mainText", {
+      x: -10,
+      y: 10,
+      rotation: -1,
+      duration: 1.5,
+      ease: "sine.inOut",
+      yoyo: true,
+      repeat: -1,
+      delay: 0.5
+    });
+
+    // Color cycling animation for about section
+    const colors = ['#005C73', '#00A105', '#A10008'];
+    const colorSpans = document.querySelectorAll('.color-cycle');
+   
+    colorSpans.forEach((span, index) => {
+      let colorIndex = 0;
+     
+      function cycleColor() {
+        gsap.to(span, {
+          color: colors[colorIndex],
+          duration: 2,
+          ease: "power2.inOut",
+          onComplete: () => {
+            colorIndex = (colorIndex + 1) % colors.length;
+            cycleColor();
+          }
+        });
+      }
+     
+      // Start with a slight delay for each span to create a wave effect
+      setTimeout(() => cycleColor(), index * 0.5);
+    });
+
+
+  </script>
+
+  
+
+  <!-- Testimonials JavaScript -->
+  <script>
+    const viewport = document.getElementById('viewport');
+    const prev = document.getElementById('prev');
+    const next = document.getElementById('next');
+
+    function cardWidth(){
+      // approximate scroll step: one full card + gap
+      const card = viewport.querySelector('.card');
+      const style = getComputedStyle(card);
+      const w = card.getBoundingClientRect().width;
+      const gap = parseFloat(getComputedStyle(viewport).gap) || 16;
+      return Math.ceil(w + gap);
+    }
+
+    function scrollByStep(dir){
+      viewport.scrollBy({ left: dir * Math.max(cardWidth(), viewport.clientWidth * 0.9), behavior: 'smooth' });
+    }
+
+    prev.addEventListener('click', () => scrollByStep(-1));
+    next.addEventListener('click', () => scrollByStep(1));
+
+    // keyboard support when the viewport is focused
+    viewport.addEventListener('keydown', (e)=>{
+      if(e.key === 'ArrowRight') { e.preventDefault(); scrollByStep(1); }
+      if(e.key === 'ArrowLeft')  { e.preventDefault(); scrollByStep(-1); }
+    });
+
+    // drag-to-scroll (desktop)
+    let isDown=false, startX, scrollLeft;
+    viewport.addEventListener('mousedown', (e)=>{
+      isDown=true; viewport.classList.add('grabbing');
+      startX=e.pageX - viewport.offsetLeft; scrollLeft=viewport.scrollLeft;
+    });
+    ['mouseleave','mouseup'].forEach(ev=>viewport.addEventListener(ev,()=>{isDown=false; viewport.classList.remove('grabbing');}));
+    viewport.addEventListener('mousemove', (e)=>{
+      if(!isDown) return; e.preventDefault();
+      const x=e.pageX - viewport.offsetLeft; const walk=(x-startX)*1.2; viewport.scrollLeft = scrollLeft - walk;
+    });
+
+    // convert vertical wheel to horizontal scroll (for trackpads/mice)
+    viewport.addEventListener('wheel', (e)=>{
+      if(Math.abs(e.deltaY) > Math.abs(e.deltaX)){
+        viewport.scrollBy({left: e.deltaY, behavior: 'auto'});
+        e.preventDefault();
+      }
+    }, { passive:false });
+  </script>
 </body>
 </html>
