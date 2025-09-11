@@ -472,7 +472,7 @@
   <!-- Analytics Dashboard Overlay -->
   <div class="analytics-overlay" id="analyticsOverlay">
     <div class="analytics-dashboard" id="analyticsDashboard">
-      <button class="analytics-close" onclick="closeAnalyticsDashboard()">&times;</button>
+      <!-- <button class="analytics-close" onclick="closeAnalyticsDashboard()">&times;</button> -->
       <div class="analytics-header">
         <h2>Productivity Analytics Dashboard</h2>
         <p>Comprehensive insights into your goal progress and consistency</p>
@@ -519,21 +519,21 @@
             });
         }
 
-        function closeAnalyticsDashboard() {
-            const overlay = document.getElementById('analyticsOverlay');
-            const dashboard = document.getElementById('analyticsDashboard');
+        // function closeAnalyticsDashboard() {
+        //     const overlay = document.getElementById('analyticsOverlay');
+        //     const dashboard = document.getElementById('analyticsDashboard');
             
-            gsap.to(dashboard, {
-                scale: 0.7,
-                opacity: 0,
-                y: 50,
-                duration: 0.3,
-                ease: "back.in(1.7)",
-                onComplete: () => {
-                    overlay.style.display = 'none';
-                }
-            });
-        }
+        //     gsap.to(dashboard, {
+        //         scale: 0.7,
+        //         opacity: 0,
+        //         y: 50,
+        //         duration: 0.3,
+        //         ease: "back.in(1.7)",
+        //         onComplete: () => {
+        //             overlay.style.display = 'none';
+        //         }
+        //     });
+        // }
 
         function generateAnalyticsContent() {
             const content = document.getElementById('analyticsContent');
@@ -864,11 +864,11 @@
         }
 
         // Close analytics dashboard when clicking outside
-        document.getElementById('analyticsOverlay').addEventListener('click', (e) => {
-            if (e.target.id === 'analyticsOverlay') {
-                closeAnalyticsDashboard();
-            }
-        });
+        // document.getElementById('analyticsOverlay').addEventListener('click', (e) => {
+        //     if (e.target.id === 'analyticsOverlay') {
+        //         closeAnalyticsDashboard();
+        //     }
+        // });
 
         // Initialize page
         loadGoals();
