@@ -1827,69 +1827,74 @@
     </script>
     <script>
     // Auto-set End Date based on Duration and Start Date
-    function addAutoEndDateLogic() {
-      const durationInput = document.getElementById('goalDuration');
-      const startDateInput = document.getElementById('startDate');
-      const endDateInput = document.getElementById('endDate');
-      let selectedDuration = '';
+function addAutoEndDateLogic() {
+  const durationInput = document.getElementById('goalDuration');
+  const startDateInput = document.getElementById('startDate');
+  const endDateInput = document.getElementById('endDate');
 
-      // Set minimum date for start date to today
-      function setMinStartDate() {
-        const today = new Date();
-        const yyyy = today.getFullYear();
-        const mm = String(today.getMonth() + 1).padStart(2, '0');
-        const dd = String(today.getDate()).padStart(2, '0');
-        const todayString = `${yyyy}-${mm}-${dd}`;
-        startDateInput.min = todayString;
-      }
+  // Set minimum date for start date to today
+  function setMinStartDate() {
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    const todayString = `${yyyy}-${mm}-${dd}`;
+    startDateInput.min = todayString;
+  }
 
-      // Set minimum date on page load
-      setMinStartDate();
+  // Set minimum date on page load
+  setMinStartDate();
 
-      // Listen for duration change (custom dropdown)
-      durationInput.addEventListener('change', function() {
-        selectedDuration = durationInput.value;
-        // If start date is already selected, update end date
-        if (startDateInput.value) {
-          setEndDate();
-        }
-      });
-
-      // Listen for start date change
-      startDateInput.addEventListener('change', function() {
-        if (durationInput.value) {
-          setEndDate();
-        }
-      });
-
-      function setEndDate() {
-        const start = new Date(startDateInput.value);
-        if (!start || isNaN(start)) return;
-        let end = new Date(start);
-        switch (durationInput.value) {
-          case '1-week':
-            end.setDate(start.getDate() + 7);
-            break;
-          case '2-weeks':
-            end.setDate(start.getDate() + 14);
-            break;
-          case '1-month':
-            end.setMonth(start.getMonth() + 1);
-            break;
-          case 'semester-long':
-            end.setMonth(start.getMonth() + 6);
-            break;
-          case 'year-long':
-            end.setFullYear(start.getFullYear() + 1);
-            break;
-        }
-        // Format as yyyy-mm-dd
-        const yyyy = end.getFullYear();
-        const mm = String(end.getMonth() + 1).padStart(2, '0');
-        const dd = String(end.getDate()).padStart(2, '0');
-        endDateInput.value = `${yyyy}-${mm}-${dd}`;
-      }
+  // Listen for duration change (custom dropdown)
+  durationInput.addEventListener('change', function() {
+    if (startDateInput.value) {
+      setEndDate();
     }
+  });
+
+  // Listen for start date change
+  startDateInput.addEventListener('change', function() {
+    if (durationInput.value) {
+      setEndDate();
+    }
+  });
+
+  function setEndDate() {
+    const start = new Date(startDateInput.value);
+    if (!start || isNaN(start.getTime())) return;
+    let end = new Date(start);
+
+    switch (durationInput.value) {
+      case '1-week':
+        end.setDate(start.getDate() + 6); // For a 7-day period, add 6 days to the start date.
+        break;
+      case '2-weeks':
+        end.setDate(start.getDate() + 13); // For a 14-day period, add 13 days to the start date.
+        break;
+      case '1-month':
+        end.setMonth(start.getMonth() + 1);
+        end.setDate(end.getDate() - 1); // Subtract 1 day to end on the last day of the month.
+        break;
+      case 'semester-long':
+        end.setMonth(start.getMonth() + 6);
+        end.setDate(end.getDate() - 1); // Subtract 1 day for a precise end date.
+        break;
+      case 'year-long':
+        end.setFullYear(start.getFullYear() + 1);
+        end.setDate(end.getDate() - 1); // Subtract 1 day for a precise end date.
+        break;
+      default:
+        // No change if no duration is selected
+        return;
+    }
+    
+    // Format as yyyy-mm-dd
+    const yyyy = end.getFullYear();
+    const mm = String(end.getMonth() + 1).padStart(2, '0');
+    const dd = String(end.getDate()).padStart(2, '0');
+    endDateInput.value = `${yyyy}-${mm}-${dd}`;
+  }
+}
     // Run after DOM and dropdowns are ready
     window.addEventListener('DOMContentLoaded', addAutoEndDateLogic);
     </script>
