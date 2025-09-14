@@ -24,6 +24,20 @@
       --border: rgba(255,255,255,0.1);    /* Border - Light border */
       --hover: rgba(0,255,209,0.05); /* Hover - Very subtle cyan */
     }
+    
+    /* Character count indicator styling */
+    .char-count {
+      position: absolute;
+      right: 10px; /* Position at the bottom right */
+      bottom: -25px; /* Position below the text box */
+      color: var(--accent2);
+      font-size: 12px;
+      background-color: var(--card);
+      padding: 4px 8px;
+      border-radius: 4px;
+      box-shadow: 0 0 5px var(--shadow-tint);
+      z-index: 10; /* Ensure it appears above other elements */
+    }
 
 /* Base Styles */
 body {
@@ -1086,12 +1100,12 @@ label {
 }
 /* --- FLASHCARDS & MCQ CARDS --- */
 .flashcards-list {
-  display: flex;
-  flex-direction: column;
-  gap: 28px;
-  padding: 24px 0;
-  width: 100%;
-}
+    display: grid;
+    grid-template-columns: 6fr 6fr;
+    gap: 28px;
+    padding: 24px 0;
+    width: 100%;
+  }
 
 .mcq-list {
   display: flex;
@@ -1110,7 +1124,7 @@ label {
   margin-bottom: 20px;
   position: relative;
   transition: all 0.2s ease;
-  overflow: hidden;
+  overflow: hidden; /* Changed back to hidden to contain text within the box */
 }
 
 
@@ -1123,13 +1137,13 @@ label {
 
 
 .flashcard {
-  width: 50%;
   height: 0;
-  padding-bottom: 50%; /* Makes height equal to width (square) */
+  padding-bottom: 60%; /* Makes height 60% of width */
   perspective: 680px;
-  margin: 0 auto 20px auto; /* Center horizontally with auto left/right margins */
+  margin-bottom: 20px;
   cursor: pointer;
   outline: none;
+  position: relative;
 }
 
 .flashcard-inner {
@@ -1155,16 +1169,21 @@ label {
   color: var(--text-primary);
   border-radius: 10px;
   box-shadow: 0 2px 8px var(--shadow-tint);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: flex; /* Using flex for vertical centering */
+  flex-direction: column; /* Stack content vertically */
+  justify-content: center; /* Center content vertically */
   font-size: 15px;
   font-weight: 500;
   padding: 20px;
   text-align: center;
   line-height: 1.5;
   border: 1px solid var(--border);
-  overflow: hidden;
+  overflow: hidden; /* Prevent text from overflowing */
+  word-wrap: break-word; /* Ensure text wraps */
+  white-space: normal; /* Ensure text wraps to next line */
+  overflow-wrap: break-word; /* Handle long words */
+  max-width: 100%; /* Ensure content doesn't exceed container width */
+  box-sizing: border-box; /* Include padding in width/height calculations */
 }
 
 /* Removed animation line above flashcard */
@@ -1269,7 +1288,7 @@ label {
   margin-bottom: 16px;
   position: relative;
   border: none;
-  overflow: hidden;
+  overflow: visible; /* Changed from hidden to visible to allow character count to show outside */
   max-width: 100%;
 }
 
@@ -1294,6 +1313,9 @@ label {
   font-weight: 600;
   margin-bottom: 12px;
   color: var(--text-primary);
+  word-wrap: break-word; /* Ensure text wraps */
+  white-space: normal; /* Ensure text wraps to next line */
+  overflow-wrap: break-word; /* Handle long words */
 }
 
 .mcq-options {
@@ -1305,13 +1327,15 @@ label {
 
 .mcq-option {
   display: flex;
-  align-items: center;
+  align-items: flex-start; /* Changed from center to flex-start to align with the top of content */
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: 6px;
   padding: 8px 12px;
   transition: all 0.15s ease;
   margin-bottom: 4px;
+  position: relative; /* Added for character count positioning */
+  min-height: 40px; /* Ensure minimum height for short content */
 }
 
 .mcq-option input[type="checkbox"] {
@@ -1336,10 +1360,12 @@ label {
   font-weight: 500;
   font-family: 'Clash Display', sans-serif;
   letter-spacing: 0.01em;
-  margin-left: auto;
-  width: 27px;
-  text-align: center;
-  flex-shrink: 0;
+  margin-left: 10px;
+  flex: 1;
+  text-align: left;
+  word-wrap: break-word; /* Ensure text wraps */
+  white-space: normal; /* Ensure text wraps to next line */
+  overflow-wrap: break-word; /* Handle long words */
 }
 
 .mcq-option.mcq-correct {
@@ -1600,6 +1626,12 @@ label {
   }
   .resource-list {
     margin-top: 10px;
+  }
+  .flashcard {
+    padding-bottom: 60%;
+  }
+  .flashcards-list {
+    grid-template-columns: 1fr;
   }
 }
   </style>
@@ -1986,20 +2018,27 @@ document.addEventListener('DOMContentLoaded', function() {
     style.id = 'flashcard-style';
     style.textContent = `
       .flashcards-list {
-        display: flex;
-        flex-direction: column;
+        display: grid;
+        grid-template-columns: 6fr 6fr;
         gap: 20px;
         width: 100%;
       }
       .flashcard {
-        width: 50%;
         height: 0;
-        padding-bottom: 35%; /* Makes height 70% of width */
+        padding-bottom: 60%; /* Makes height 60% of width */
         perspective: 800px;
-        margin: 0 auto 20px auto; /* Center horizontally */
+        margin-bottom: 20px;
         cursor: pointer;
         outline: none;
         position: relative;
+      }
+      @media (max-width: 700px) {
+        .flashcards-list {
+          grid-template-columns: 1fr;
+        }
+        .flashcard {
+          padding-bottom: 60%;
+        }
       }
       .flashcard-inner {
         position: absolute;
